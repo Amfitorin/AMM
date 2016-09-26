@@ -10,6 +10,7 @@ procedure QuickSortNonRecursive(var arr: array of Integer);
 procedure SelectionSort(var arr: array of Integer);
 procedure BubbleSort(var arr: array of Integer);
 procedure ShakerSort(var arr: array of Integer);
+procedure ShellSort(var arr: array of Integer);
 
 
 
@@ -207,11 +208,46 @@ begin
         tmp:= arr[j-1];
         arr[j-1]:= arr[j];
         arr[j]:= tmp;
-        k:= j; 
+        k:= j;
       end;
     end;
     R:= k - 1; // Сдвигаем правую границу влево
   until L > R;
 end;
 
+// Сортировка Шелла:
+procedure ShellSort(var arr: array of Integer);
+const T = 4; // Всего T расстояний сортировки
+var i, j, k, m, s : Integer;
+    tmp : Integer;
+    size : Integer;
+    h : array of Integer;
+begin
+  size:= Length(arr);
+  SetLength(h, T);  // Установка длины (T) одномерного массива h[]
+  h[0]:= 9;
+  h[1]:= 5;
+  h[2]:= 3;
+  h[3]:= 1;
+  for m:=0 to T-1 do
+  begin
+    k:= h[m];
+    for i:= k to size-1 do
+    begin
+      tmp:= arr[i]; j:= i-k;
+      while ((j >= k) and (tmp < arr[j])) do
+      begin
+        arr[j+k]:=arr[j];
+        j:= j - k;
+      end;
+      if (j >= k) or (tmp >= arr[j]) then
+        arr[j+k]:= tmp
+      else
+      begin
+        arr[j+k]:= arr[j];
+        arr[j]:= tmp;
+      end;  
+    end;
+  end;
+end;  
 end.
