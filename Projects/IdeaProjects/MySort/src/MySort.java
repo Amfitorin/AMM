@@ -82,6 +82,12 @@ public class MySort {
         timeout = System.currentTimeMillis() - timeout;
         //arr7.display();
         System.out.println("Длительность шейкерной сортировки: " + timeout + " мс");
+
+        timeout= System.currentTimeMillis();
+        arr8.shellSort(); // Зарускаем сортировку Шелла
+        timeout = System.currentTimeMillis() - timeout;
+        //arr8.display();
+        System.out.println("Длительность сортировки Шелла: " + timeout + " мс");
     }
 
 }
