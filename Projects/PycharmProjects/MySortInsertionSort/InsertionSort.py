@@ -2,25 +2,6 @@ import random as rn
 import time
 import copy
 
-# Класс таймера для определения времени выполнения кода
-class Timer(object):
-    def __enter__(self):
-        self._startTime = time.time()
-
-    def __exit__(self, type, value, traceback):
-        print("Время сортировки: {:.3f} мс".format((time.time() - self._startTime)*1000))
-
-# Чужой код метода сортировки - БЕЗ ЗАГЛУШКИ
-def InsertionSort(A):
-    for j in range(1,len(A)):
-        key = A[j]
-        i = j-1
-        while (i > -1) and key < A[i]:
-            A[i+1]=A[i]
-            i=i-1
-        A[i+1] = key
-    return A
-
 # Метод сортировки прямыми вставками:
 def selectionSort(arr):
     size = len(arr)
@@ -73,7 +54,7 @@ def sort(arr, L, R):
 			arr[i] = arr[j]
 			arr[j] = w
 			i = i + 1
-			j = j - 1	
+			j = j - 1
 		if (i > j): # Выход из бесконечного цикла по условию
 			break
 		if (L < j):
@@ -202,13 +183,17 @@ def main():
 	ar2 = copy.deepcopy(ar)
 
 	# Запускаем на сортировку первый массив
-	with Timer() as p:
-		selectionSort(ar)
-	# print(ar)  # Выводим на экран
-    # Запускаем на сортировку второй массив
-	with Timer() as p:
-		selectionSortBisection(ar2) # InsertionSort # sortDirectInclusion(ar2)
-	# print(ar2)  # Выводим на экран
+
+	t = time.time()
+	selectionSort(ar)
+	t = (time.time() - t) * 1000
+	print("Длительность сортировки прямыми вставками: {:.3f} мс".format(t))
+
+
+	t = time.time()
+	selectionSort(ar)
+	t = (time.time() - t) * 1000
+	print("Длительность сортировки прямыми вставками: {:.3f} мс".format(t))
 
 # return 0
 
