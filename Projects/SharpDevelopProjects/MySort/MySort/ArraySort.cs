@@ -74,7 +74,7 @@ namespace MySort
 	    
 		    
 	    // Метод сортировки прямыми вставками:
-	    public void selectionSort() 
+	    public void insertionSort() 
 	    {
 	        int i, j;
 	        // Запускаем сортировку промежуточного массива:
@@ -93,8 +93,8 @@ namespace MySort
 	        }
 	    }
 	
-	    // Метод сортировки прямым включением Модификация бисекцией
-	    public void selectionSortBisection()
+	    // Метод сортировки прямыми вставками Модификация бисекцией
+	    public void insertionSortBisection()
 	    {
 	        int i, j;
 	        int M, L, R;
