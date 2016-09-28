@@ -134,7 +134,7 @@ def selectionSort(arr):
     return arr
 
 
-# Метод сортировки gepshmrjv (прямого обмена):
+# Метод сортировки пузырьком(прямого обмена):
 def bubbleSort(arr):
     size = len(arr)
     # Запускаем сортировку массива:
