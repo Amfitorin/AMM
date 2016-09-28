@@ -171,7 +171,7 @@ namespace MySort
     }
 
     // Метод сортировки прямым выбором:
-    public void selesctionSort(){
+    public void selectionSort(){
         int i, j, k;
         int tmp;
         // Запускаем сортировку массива:
