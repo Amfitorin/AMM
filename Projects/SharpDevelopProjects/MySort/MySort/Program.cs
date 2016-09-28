@@ -40,9 +40,10 @@ namespace MySort
 	
 	        // arr.display();
 	        
-			Stopwatch stopwatch = new Stopwatch(); // Объект стопвотча, будем считать время сортировки
+			Stopwatch stopwatch; // Объект стопвотча, будем считать время сортировки
 			
 			arr1 = new ArraySort(arr); // Делаем копию сходного массива для текущей сортировки
+			stopwatch = new Stopwatch();
 	        stopwatch.Start();
 	        arr1.insertionSort(); // Сортировка вставками
 	        stopwatch.Stop();
@@ -50,6 +51,7 @@ namespace MySort
 	        // arr1.display();
 	
 			arr1 = new ArraySort(arr);
+			stopwatch = new Stopwatch();
 	        stopwatch.Start();
 	        arr1.insertionSortBisection(); // Сортировка вставками
 	        stopwatch.Stop();
@@ -57,6 +59,7 @@ namespace MySort
 	        // arr1.display();
 			
 	        arr1 = new ArraySort(arr);
+	        stopwatch = new Stopwatch();
 	        stopwatch.Start();
 	        arr1.quickSort(); // Быстрая сортировка рекурсией
 	        stopwatch.Stop();
@@ -64,6 +67,7 @@ namespace MySort
 	        // arr1.display();
 			
 	        arr1 = new ArraySort(arr);
+	        stopwatch = new Stopwatch();
 	        stopwatch.Start();
 	        arr1.quickSortNonRecursive(); // Быстрая сортировка рекурсией
 	        stopwatch.Stop();
@@ -71,6 +75,7 @@ namespace MySort
 	        // arr1.display();
 	        
 	        arr1 = new ArraySort(arr);
+	        stopwatch = new Stopwatch();
 	        stopwatch.Start();
 	        arr1.selectionSort(); // Сортировка прямым выбором
 	        stopwatch.Stop();
@@ -78,6 +83,7 @@ namespace MySort
 	        // arr1.display();
 	        
 	        arr1 = new ArraySort(arr);
+	        stopwatch = new Stopwatch();
 	        stopwatch.Start();
 	        arr1.bubbleSort(); // Сортировка прямого обмена (Пузырьковая сортировка)
 	        stopwatch.Stop();
@@ -85,6 +91,7 @@ namespace MySort
 	        // arr1.display();
 	        
 	        arr1 = new ArraySort(arr);
+	        stopwatch = new Stopwatch();
 	        stopwatch.Start();
 	        arr1.shakerSort(); // Шейкерная сортировка (хождение зигзагом с сужением границ, модификация пузырьковой сортировки)
 	        stopwatch.Stop();
@@ -92,6 +99,7 @@ namespace MySort
 	        // arr1.display();
 	        
 	        arr1 = new ArraySort(arr);
+	        stopwatch = new Stopwatch();
 	        stopwatch.Start();
 	        arr1.shellSort(); // Сортировки Шелла (несколько последовательных сортировок с разной дальностью):
 	        stopwatch.Stop();
