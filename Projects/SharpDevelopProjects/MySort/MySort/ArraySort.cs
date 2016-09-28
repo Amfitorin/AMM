@@ -116,7 +116,7 @@ namespace MySort
 	    }
 		
 	// Метод быстрой сортировки с рекурсией:
-	public void quickSort(int L = 1, int R = size - 1){
+	public void Sort(int L, int R){
 		int i, j;
 		int x, w;
 		
@@ -125,14 +125,17 @@ namespace MySort
 		x = arr[(L + R) / 2];
 		do{
 			while (arr[i] < x) i++;
-			while (x < arr[j) j--;
+			while (x < arr[j]) j--;
 			if (i <= j){
 				w = arr[i]; arr[i] = arr[j]; arr[j] = w; i++; j--;
 			}
 		} while (i <= j);
-		if (L < j) quickSort(L, j);
-		if (i < R) quickSort(i, R);
+		if (L < j) Sort(L, j);
+		if (i < R) Sort(i, R);
 	}
+    public void quickSort(){
+        Sort(1, size - 1);
+    }
 	    
     // Метод быстрой сортировки без рекурсии:
     public void quickSortNonRecursive(){
