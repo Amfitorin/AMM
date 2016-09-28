@@ -66,7 +66,7 @@ def sort(arr, L, R):
 	while True: # Бесконечный цикл, аналог repeat ... until в паскале
 		while (arr[i] < x):
 			i = i + 1
-		while (x < arr[j):
+		while (x < arr[j]):
 			j = j - 1
 		if (i <= j):
 			w = arr[i]
@@ -92,8 +92,8 @@ def quickSort(arr):
 # Метод быстрой сортировки без рекурсии:
 def quickSortNonRecursive(arr):
 	size = len(arr)
-	stackLow = [0] * zize # Стек нижних индексов, используем оператор повторения списков
-	stackHigh = [0] * zize # Стек верхних индексов
+	stackLow = [0] * size # Стек нижних индексов, используем оператор повторения списков
+	stackHigh = [0] * size # Стек верхних индексов
 	
 	# Запускаем сортировку массива:
 	s = 1; # Нулевой элемент не рассматриваем, он для заглушки в других сортировках, а так надо бы s = 0;
@@ -112,7 +112,7 @@ def quickSortNonRecursive(arr):
 			while True: # Запускаем третий вложенный цикл
 				while (arr[i] < x):
 					i = i + 1
-                while (x < arr[j]):
+				while (x < arr[j]):
 					j = j - 1
 				if (i <= j):
 					w = arr[i]
@@ -155,7 +155,7 @@ def bubbleSort(arr):
 	# Запускаем сортировку массива:
 	for i in range(2, size-1):
 		for j in range(size-1, i, -1):
-			if (arr[j-1] > arr[j):
+			if (arr[j-1] > arr[j]):
 				tmp = arr[j-1]
 				arr[j-1] = arr[j]
 				arr[j] = tmp
@@ -172,45 +172,45 @@ def shakerSort(arr):
 		for j in range(R, L, -1): # Проход справа налево
 			if (arr[j-1] > arr[j]):
 				tmp = arr[j-1]
-                arr[j-1] = arr[j]
-                arr[j] = tmp
-                k = j
+				arr[j-1] = arr[j]
+				arr[j] = tmp
+				k = j
 		L = k + 1 # Сдвигаем левую границу вправо
 		for j in range(L, R): # Проход слева направо
 			if (arr[j-1] > arr[j]):
 				tmp = arr[j-1]
-                arr[j-1] = arr[j]
-                arr[j] = tmp
-                k = j
-		R = k - 1 # Сдвигаем правую границу влево	
+				arr[j-1] = arr[j]
+				arr[j] = tmp
+				k = j
+		R = k - 1 # Сдвигаем правую границу влево
 		if (L > R): # Выходим из внешнего бесконечного цикла
 			break
 	return arr
 		
 # Сама программа ------------------------------------------------------------
 def main():
-    print("Задайте число элементов и диапазон (size, start, end, например, 10 0 5):")
-    size, start, end = map(int, input().split()) # Читаем параметры для генерации
-    # ar = [5, 2, 4, 6, 1, 3]
-    size = size + 1
-    ar = [rn.randint(start, end) for i in range(size)] # Генерируем массив
-    ar[0] = "Заглушка"
-    # print(ar) # Выводим на экран
+	print("Задайте число элементов и диапазон (size, start, end, например, 10 0 5):")
+	size, start, end = map(int, input().split()) # Читаем параметры для генерации
+	# ar = [5, 2, 4, 6, 1, 3]
+	size = size + 1
+	ar = [rn.randint(start, end) for i in range(size)] # Генерируем массив
+	ar[0] = "Заглушка"
+	# print(ar) # Выводим на экран
 
 
     # Делаем копию массива для второго алгоритма
-    ar2 = copy.deepcopy(ar)
+	ar2 = copy.deepcopy(ar)
 
-    # Запускаем на сортировку первый массив
-    with Timer() as p:
-        selectionSort(ar)
-    # print(ar)  # Выводим на экран
+	# Запускаем на сортировку первый массив
+	with Timer() as p:
+		selectionSort(ar)
+	# print(ar)  # Выводим на экран
     # Запускаем на сортировку второй массив
-    with Timer() as p:
-        selectionSortBisection(ar2) # InsertionSort # sortDirectInclusion(ar2)
-    # print(ar2)  # Выводим на экран
+	with Timer() as p:
+		selectionSortBisection(ar2) # InsertionSort # sortDirectInclusion(ar2)
+	# print(ar2)  # Выводим на экран
 
-    return 0
+# return 0
 
 if __name__ == "__main__":
     main()
