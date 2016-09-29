@@ -151,25 +151,25 @@ def bubbleSort(arr):
 def shakerSort(arr):
     size = len(arr)
     # Запускаем сортировку массива:
-    L = 2
+    L = 1
     R = size-1
     k = R
     while True:  # Запускаем внешний бесконечный цикл
-        for j in range(R, L, -1):  # Проход справа налево
+        for j in range(R, L, -1):  # Проход справа налево L-1
             if (arr[j - 1] > arr[j]):
                 tmp = arr[j - 1]
                 arr[j - 1] = arr[j]
                 arr[j] = tmp
                 k = j
-        L = k + 1  # Сдвигаем левую границу вправо
+        L = k # L = k + 1 не нужно делать  # Сдвигаем левую границу вправо
         for j in range(L, R, +1):  # Проход слева направо
             if (arr[j - 1] > arr[j]):
                 tmp = arr[j - 1]
                 arr[j - 1] = arr[j]
                 arr[j] = tmp
                 k = j
-        R = k - 1  # Сдвигаем правую границу влево
-        if (L >= R):  # Выходим из внешнего бесконечного цикла
+        R = k # R = k - 1 не нужно делать # Сдвигаем правую границу влево
+        if (L == R):  # Выходим из внешнего бесконечного цикла
             break
     return arr
 
@@ -206,6 +206,8 @@ def main():
     ar = [rn.randint(start, end) for i in range(size)]  # Генерируем массив
     ar[0] = "Заглушка"
     print(ar)  # Выводим на экран
+
+    ar = ['Заглушка', 6, 8, 6, 2, 3, 9, 9, 6, 2, 5]
 
     # 1. Запускаем сортировку прямыми вставками:
     ar1 = copy.deepcopy(ar)  # Делаем копию массива
@@ -265,12 +267,12 @@ def main():
     print(ar1)
 
     # 8. Зарускаем сортировку Шелла:
-    ar1 = copy.deepcopy(ar)
-    t = time.time()
-    shellSort(ar1)
-    t = (time.time() - t) * 1000
-    print("Длительность сортировки Шелла: {:.0f} мс".format(t))
-    print(ar1)
+    # ar1 = copy.deepcopy(ar)
+    # t = time.time()
+    # shellSort(ar1)
+    # t = (time.time() - t) * 1000
+    # print("Длительность сортировки Шелла: {:.0f} мс".format(t))
+    # print(ar1)
 
     return 0
 
