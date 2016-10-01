@@ -149,47 +149,49 @@ def bubbleSort(arr):
 
 # Метод шейкерной сортировки (хождение зигзагом с сужением границ, модификация пузырьковой сортировки):
 def shakerSort(arr):
+    arr = arr[1:]
     size = len(arr)
     # Запускаем сортировку массива:
     L = 1
     R = size-1
     k = R
     while True:  # Запускаем внешний бесконечный цикл
-        for j in range(R, L, -1):  # Проход справа налево L-1
+        for j in range(R, L - 1 , -1):  # Проход справа налево L-1
             if (arr[j - 1] > arr[j]):
                 tmp = arr[j - 1]
                 arr[j - 1] = arr[j]
                 arr[j] = tmp
                 k = j
-        L = k # L = k + 1 не нужно делать  # Сдвигаем левую границу вправо
-        for j in range(L, R, +1):  # Проход слева направо
+        L = k  + 1 # L = k + 1 не нужно делать  # Сдвигаем левую границу вправо
+        for j in range(L, R + 1):  # Проход слева направо
             if (arr[j - 1] > arr[j]):
                 tmp = arr[j - 1]
                 arr[j - 1] = arr[j]
                 arr[j] = tmp
                 k = j
-        R = k # R = k - 1 не нужно делать # Сдвигаем правую границу влево
-        if (L == R):  # Выходим из внешнего бесконечного цикла
+        R = k - 1 # R = k - 1 не нужно делать # Сдвигаем правую границу влево
+        if (L > R):  # Выходим из внешнего бесконечного цикла
             break
     return arr
 
 
 # Метод сортировки Шелла (несколько последовательных сортировок с разной дальностью):
 def shellSort(arr):
+    arr= arr[1:]
     size = len(arr)
     T = 4;  # Всего T расстояний сортировки
     h = [9, 5, 3, 1]  # Массив расстояний сортировок
     # Запускаем сортировку массива:
-    for m in range(0, T - 1):
+    for m in range(0, T ):
         k = h[m]
-        for i in range(k, size - 1):
+        for i in range(k, size ):
             tmp = arr[i]
             j = i - k
             while ((j >= k) and (tmp < arr[j])):
                 arr[j + k] = arr[j]
                 j = j - k
 
-            if not ((j >= k) and (tmp >= arr[j])):
+            if not ((j < k) and (tmp < arr[j])):
                 arr[j + k] = tmp
             else:
                 arr[j + k] = arr[j]
@@ -261,18 +263,18 @@ def main():
     # 7. Запускаем шейкерную сортировку:
     ar1 = copy.deepcopy(ar)
     t = time.time()
-    shakerSort(ar1)
+    ar1 = shakerSort(ar1)
     t = (time.time() - t) * 1000
     print("Длительность шейкерной сортировки: {:.0f} мс".format(t))
     print(ar1)
 
     # 8. Зарускаем сортировку Шелла:
-    # ar1 = copy.deepcopy(ar)
-    # t = time.time()
-    # shellSort(ar1)
-    # t = (time.time() - t) * 1000
-    # print("Длительность сортировки Шелла: {:.0f} мс".format(t))
-    # print(ar1)
+    ar1 = copy.deepcopy(ar)
+    t = time.time()
+    ar1 = shellSort(ar1)
+    t = (time.time() - t) * 1000
+    print("Длительность сортировки Шелла: {:.0f} мс".format(t))
+    print(ar1)
 
     return 0
 
