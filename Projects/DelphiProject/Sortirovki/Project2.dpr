@@ -95,46 +95,46 @@ begin
   // Засекаем время:
   t1:= GetTickCount;
   // Выполняем сортировку массива:
-  QuickSort(a3);//SelectionSort(a1);// BubbleSort(a1);//ShakerSort(a1); //InsertionSort(a1); // InsertionSortBisection(a);
+  QuickSort(a3);
   // Засекаем конечное время:
   t2:= GetTickCount;
-  //for i:= 1 to Length(a3)-1 do Write(a3[i], '; '); Writeln;  // Выводим отсортированный массив
+  // for i:= 1 to Length(a3)-1 do Write(a3[i], '; '); Writeln;  // Выводим отсортированный массив
   Writeln('Длительность быстрой сортировки с рекурсией: ', t2-t1, ' мс');
 
   // Засекаем время:
   t1:= GetTickCount;
   // Выполняем сортировку массива:
-  QuickSortNonRecursive(a4);//SelectionSort(a1);// BubbleSort(a1);//ShakerSort(a1); //InsertionSort(a1); // InsertionSortBisection(a);
+  QuickSortNonRecursive(a4);
   // Засекаем конечное время:
   t2:= GetTickCount;
-  //for i:= 1 to Length(a4)-1 do Write(a4[i], '; '); Writeln;  // Выводим отсортированный массив
+  // for i:= 1 to Length(a4)-1 do Write(a4[i], '; '); Writeln;  // Выводим отсортированный массив
   Writeln('Длительность быстрой сортировки без рекурсии: ', t2-t1, ' мс');
 
   // Засекаем время:
   t1:= GetTickCount;
   // Выполняем сортировку массива:
-  SelectionSort(a5);//SelectionSort(a1);// BubbleSort(a1);//ShakerSort(a1); //InsertionSort(a1); // InsertionSortBisection(a);
+  SelectionSort(a5);
   // Засекаем конечное время:
   t2:= GetTickCount;
-  //for i:= 1 to Length(a5)-1 do Write(a5[i], '; '); Writeln;  // Выводим отсортированный массив
+  // for i:= 1 to Length(a5)-1 do Write(a5[i], '; '); Writeln;  // Выводим отсортированный массив
   Writeln('Длительность сортировки прямым выбором: ', t2-t1, ' мс');
 
   // Засекаем время:
   t1:= GetTickCount;
   // Выполняем сортировку массива:
-  BubbleSort(a6);//SelectionSort(a1);// BubbleSort(a1);//ShakerSort(a1); //InsertionSort(a1); // InsertionSortBisection(a);
+  BubbleSort(a6);
   // Засекаем конечное время:
   t2:= GetTickCount;
-  //for i:= 1 to Length(a6)-1 do Write(a6[i], '; '); Writeln;  // Выводим отсортированный массив
+  // for i:= 1 to Length(a6)-1 do Write(a6[i], '; '); Writeln;  // Выводим отсортированный массив
   Writeln('Длительность сортировки пузырьком: ', t2-t1, ' мс');
 
   // Засекаем время:
   t1:= GetTickCount;
   // Выполняем сортировку массива:
-  ShakerSort(a7);//SelectionSort(a1);// BubbleSort(a1);//ShakerSort(a1); //InsertionSort(a1); // InsertionSortBisection(a);
+  ShakerSort(a7);
   // Засекаем конечное время:
   t2:= GetTickCount;
-  //for i:= 1 to Length(a7)-1 do Write(a7[i], '; '); Writeln;  // Выводим отсортированный массив
+  // for i:= 1 to Length(a7)-1 do Write(a7[i], '; '); Writeln;  // Выводим отсортированный массив
   Writeln('Длительность шейкерной сортировки: ', t2-t1, ' мс');
 
   // Засекаем время:
@@ -143,7 +143,7 @@ begin
   ShellSort(a8);// Запускаем сортировку Шелла
   // Засекаем конечное время:
   t2:= GetTickCount;
-  //for i:= 1 to Length(a7)-1 do Write(a7[i], '; '); Writeln;  // Выводим отсортированный массив
+  // for i:= 1 to Length(a8)-1 do Write(a8[i], '; '); Writeln;  // Выводим отсортированный массив
   Writeln('Длительность сортировки Шелла: ', t2-t1, ' мс');
 
   Readln;    Readln;
