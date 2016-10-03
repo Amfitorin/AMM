@@ -99,14 +99,15 @@ end;
 
 // Быстрая сортировка без рекурсии:
 procedure QuickSortNonRecursive(var arr: array of Integer);
+const M = 12; // Размер стеков
 var i, j, L, R, s : Integer;
     x, w : Integer;
     stackLow, stackHigh: array of Integer; // Стеки индексов
     size: Integer;
 begin
   size:= Length(arr);
-  SetLength(stackLow, size);  // Установка длины одномерного массива
-  SetLength(stackHigh, size); 
+  SetLength(stackLow, M);  // Установка длины одномерного массива
+  SetLength(stackHigh, M);
   // Нулевой элемент не рассматриваем, он для заглушки в других сортировках, а так надо бы s:=0;
   s := 1;  stackLow[s]:= 0; stackHigh[s]:= size - 1; // Тут s с первого элемента, т.к. нулевой - заглушка
   repeat // Взять верхний запрос со стека
