@@ -99,7 +99,7 @@ end;
 
 // Быстрая сортировка без рекурсии:
 procedure QuickSortNonRecursive(var arr: array of Integer);
-const M = 12; // Размер стеков
+const M = 24; // Размер стеков
 var i, j, L, R, s : Integer;
     x, w : Integer;
     stackLow, stackHigh: array of Integer; // Стеки индексов
