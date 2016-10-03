@@ -108,7 +108,7 @@ begin
   SetLength(stackLow, size);  // Установка длины одномерного массива
   SetLength(stackHigh, size); 
   // Нулевой элемент не рассматриваем, он для заглушки в других сортировках, а так надо бы s:=0;
-  s := 1;  stackLow[0]:= 0; stackHigh[0]:= size - 1;
+  s := 1;  stackLow[s]:= 0; stackHigh[s]:= size - 1; // Тут s с первого элемента, т.к. нулевой - заглушка
   repeat // Взять верхний запрос со стека
     // L := stack[s].L; R := stack[s].R; s := s - 1;
     L:= stackLow[s]; R:= stackHigh[s]; s:= s - 1;
