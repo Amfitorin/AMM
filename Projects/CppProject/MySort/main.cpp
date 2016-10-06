@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cstdlib>
 #include <ctime>
+#include<conio.h>
 
 using namespace std;
 
@@ -252,12 +253,11 @@ int main()
 {
     setlocale(LC_ALL, "rus");
 
-    cout << "Сортировка массива" << endl;
-    cout << "Задайте число элементов и диапазон (size, start, end, например, 10 0 5): " << endl;;
+    cout << "Задайте число элементов и диапазон для генерирования (size, start, end, например, 10 0 5): " << endl;
     int asize;
     cin >> asize; asize = asize + 1; // Увеличиваем на 1, так как в нулевом элементе в некоторых сортировках будем хранить заглушку
     cin >> start;
-    cin >> endd;
+    cin >> endd; cout << endl;
     int *aa = generateA(asize); // Динамически выделяем память под хранение массива размера size и генерируем его элементы
     // printA(aa, asize); // Выводим сгенерированный массив
 
@@ -335,5 +335,7 @@ int main()
     // printA(a8, asize);
     delete [] a8;
 
+    cout << endl << "Для выхода из программы нажмите Enter...";
+    char c = getch();
     return 0;
 }
