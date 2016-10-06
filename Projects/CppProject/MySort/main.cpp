@@ -83,9 +83,10 @@ int quickSortNonRecursive(int* arr, int ssize)
 	int i, j;
 	int L, R, s;
 	int x, w;
+	const int M = 12; // Размер стека
 	// Динамически выделяем память под хранение двух массивов размера size:
-	int *stackLow = new int[ssize]; // Стек нижних индексов
-	int *stackHigh = new int[ssize]; // Стек верхних индексов
+	int *stackLow = new int[M]; // Стек нижних индексов
+	int *stackHigh = new int[M]; // Стек верхних индексов
 
 	// Запускаем сортировку массива:
 	s = 1; // Нулевой элемент не рассматриваем, он для заглушки в других сортировках, а так надо бы s = 0;
