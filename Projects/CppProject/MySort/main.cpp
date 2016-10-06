@@ -229,6 +229,7 @@ int printA(int* arr1, int ssize)
 {
     for (int i = 1; i < ssize; i++) cout << arr1[i] << ' '; // Выводим отсортированный массив
     cout << endl;
+    return 0;
 }
 
 int start, endd; // Переменные для рандома
@@ -260,72 +261,79 @@ int main()
     int *aa = generateA(asize); // Динамически выделяем память под хранение массива размера size и генерируем его элементы
     // printA(aa, asize); // Выводим сгенерированный массив
 
-    int *a1; // Указатель на копию массива, который будем сортировать, а исходный трогать не будем
-    int t; // четчик времени сортировки
+    int t; // Счетчик времени сортировки
 
     // 1. Выполняем сортировку прямыми вставками:
-    a1 = copyA(aa, asize); // Делаем копию массива
+    int * a1 = copyA(aa, asize); // Делаем копию массива
     t = clock(); // Запоминаем начало
     insertionSort(a1, asize); // Сортировка
     t = clock() - t; // и, наконец, вычисляем длительность сортировки
     cout << "Длительность сортировки прямыми вставками: " << t << " мс" << endl;
     // printA(a1, asize); //Выводим отсортированный массив
+    delete [] a1;
 
     // 2. Выполняем сортировку прямыми вставками c бисекцией:
-    a1 = copyA(aa, asize);
+    int * a2 = copyA(aa, asize);
     t = clock();
-    insertionSortBisection(a1, asize);
+    insertionSortBisection(a2, asize);
     t = clock() - t;
     cout << "Длительность сортировки прямыми вставками с бисекцией: " << t << " мс" << endl;
-    // printA(a1, asize);
+    // printA(a2, asize);
+    delete [] a2;
 
     // 3. Выполняем быструю сортировку с рекурсией:
-    a1 = copyA(aa, asize);
+    int * a3 = copyA(aa, asize);
     t = clock();
-    quickSort(a1, asize);
+    quickSort(a3, asize);
     t = clock() - t;
     cout << "Длительность быстрой сортировки с рекурсией: " << t << " мс" << endl;
-    // printA(a1, asize);
+    // printA(a3, asize);
+    delete [] a3;
 
     // 4. Выполняем быструю сортировку без рекурсии:
-    a1 = copyA(aa, asize);
+    int * a4 = copyA(aa, asize);
     t = clock();
-    quickSortNonRecursive(a1, asize);
+    quickSortNonRecursive(a4, asize);
     t = clock() - t;
     cout << "Длительность быстрой сортировки без рекурсии: " << t << " мс" << endl;
-    // printA(a1, asize);
+    // printA(a4, asize);
+    delete [] a4;
 
     // 5. Выполняем сортировку прямым выбором:
-    a1 = copyA(aa, asize);
+    int * a5 = copyA(aa, asize);
     t = clock();
-    selectionSort(a1, asize);
+    selectionSort(a5, asize);
     t = clock() - t;
     cout << "Длительность сортировки прямым выбором: " << t << " мс" << endl;
-    // printA(a1, asize);
+    // printA(a5, asize);
+    delete [] a5;
 
     // 6. Выполняем сортировку пузырьком:
-    a1 = copyA(aa, asize);
+    int * a6 = copyA(aa, asize);
     t = clock();
-    bubbleSort(a1, asize);
+    bubbleSort(a6, asize);
     t = clock() - t;
     cout << "Длительность сортировки пузырьком: " << t << " мс" << endl;
-    // printA(a1, asize);
+    // printA(a6, asize);
+    delete [] a6;
 
     // 7. Выполняем шейкерную сортировку:
-    a1 = copyA(aa, asize);
+    int * a7 = copyA(aa, asize);
     t = clock();
-    shakerSort(a1, asize);
+    shakerSort(a7, asize);
     t = clock() - t;
     cout << "Длительность шейкерной сортировки: " << t << " мс" << endl;
-    // printA(a1, asize);
+    // printA(a7, asize);
+    delete [] a7;
 
     // 8. Выполняем сортировку Шелла:
-    a1 = copyA(aa, asize);
+    int * a8 = copyA(aa, asize);
     t = clock();
-    shellSort(a1, asize);
+    shellSort(a8, asize);
     t = clock() - t;
     cout << "Длительность сортировки Шелла: " << t << " мс" << endl;
-    // printA(a1, asize);
+    // printA(a8, asize);
+    delete [] a8;
 
     return 0;
 }
