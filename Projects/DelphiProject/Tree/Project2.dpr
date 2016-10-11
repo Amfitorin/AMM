@@ -17,6 +17,18 @@ var arr: array of Integer;
 
 begin
   { TODO -oUser -cConsole Main : Insert code here }
+
+  // Выводим информацию по задаче:
+  Writeln('| ------------------------------------------------------- |');
+  Writeln('| Бедарев А.А., ПММ, 2 курс, 1 семестр. Задание 2, Вар. 3 |');
+  Writeln('| Найти и удалить (правым удалением) среднюю по значению  |');
+  Writeln('| вершину из вершин дерева, у которых количество потомков |');
+  Writeln('| в левом поддереве отличается от количества потомков в   |');
+  Writeln('| правом поддереве на 1. Выполнить прямой (левый) обход   |');
+  Writeln('| полученного дерева.                                     |');
+  Writeln('| ------------------------------------------------------- |');
+  Writeln;
+
   SetLength(arr, 21);  // Установка длины одномерного массива
   assign(myFile, 'in.txt'); // Связываем файл с переменной myFile
   reset(myFile); // Открываем файл на чтение
@@ -37,26 +49,32 @@ begin
   //FrontOrderLeft(uk);  Writeln;
   //FrontOrderRight(uk); Writeln;
 
+  // Пробегаем по массиву и вставлем каждый элемент массива как ключ АВР-дерева:
   for i:=0 to 20 do uk:= InsertKey(uk, arr[i]);
-  //FrontOrderLeft(uk);  Writeln;
+  Write('-> '); Writeln('Исходное дерево (прямой левый обход):');
+  Write('   '); FrontOrderLeft(uk);  Writeln; // Выводим на консоль прямым левым обходом то, что получилось, наше дерево
 
-  Write('Keys: '); sum:= SumLR(uk);
+  //
   Writeln;
-  Writeln('Sum = ', sum);
-  Write('Count Key = '); count:= CountLR(uk); Writeln(count);
+  Write('-> '); Write('Подходящие вершины: '); sum:= SumLR(uk);
+  Writeln;
+  Write('-> '); Writeln('Сумма подходящих ключей = ', sum);
+  Write('-> '); Write('Количество ключей = '); count:= CountLR(uk); Writeln(count);
+  Write('-> '); Write('Удаляемая вершина (среднее значение) = '); srednee:= sum div count; Writeln(srednee);
+  Writeln;
 
-  Write('Srednee znacheniye = '); srednee:= sum div count; Writeln(srednee);
+  // FrontOrderLeft(uk);  Writeln;
 
-  FrontOrderLeft(uk);  Writeln;
-  uk:= RemoveKey(uk, srednee);
-  FrontOrderLeft(uk);  Writeln;
-
-
-  uk:= RemoveKey(uk, 1);
-  FrontOrderLeft(uk);  Writeln;
+  uk:= RemoveKey(uk, srednee); // Удаляем ненужный элемент
+  Write('-> '); Writeln('Дерево после удаления элемента (прямой левый обход):');
+  Write('   '); FrontOrderLeft(uk);  Writeln;
 
 
-  // PrintTree(uk, 0); // Печать дерева
+  // uk:= RemoveKey(uk, 1);
+  // FrontOrderLeft(uk);  Writeln;
+
+
+  // PrintTree(uk, 0); // Печать пространственного дерева
 
   Readln;
 end.
