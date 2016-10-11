@@ -325,24 +325,28 @@ begin
       if k > p^.key then p^.right:= RemoveKey(p^.right, k)
       else  // Нашли ключ, т.е. k = p^.key
         begin
-          Writeln(p^.key);
-          q:= p^.left;
-          r:=p^.right;
+          Writeln(p^.key); // 11
+          q:= p^.left; // Запомнили левое поддерево   // 10
+          r:=p^.right; // Запомнили правое поддерево  // 13
           //Dispose(p);
           // p:= nil;
-          if r = nil then p:= q
+          if r = nil then p:= q   // Если правого поддререва нет, просто переносим на место строго узла новый
           else
           begin
-            min:= FindMinNode(r);
-            Writeln(min^.key);
+            min:= FindMinNode(r); // иначе ищем минимальный элемент в правом поддереве и запоминаем его
+            Writeln(min^.key); // 12
             //p:= min;
-            min^.right:= RemoveMinNode(r);
+            min^.right:= RemoveMinNode(r); // Перенесли в правой поддерево 12 элемента элемент 13 и всю его цепочку
+            Writeln((min^.right)^.key);
             min^.left:= q;
+            p:= min; // Вот этого не было
             Result:= BalanceNode(min);
           end;  
         end;  
   end;
-  Result:= BalanceNode(p);
+  // И если не пустой указатель, то балансируем узел, или просто возвращаем nil
+  if p <> nil then Result:= BalanceNode(p)
+  else Result:= nil;
 end;  
 
 

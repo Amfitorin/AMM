@@ -51,6 +51,10 @@ begin
   FrontOrderLeft(uk);  Writeln;
 
 
+  uk:= RemoveKey(uk, 1);
+  FrontOrderLeft(uk);  Writeln;
+
+
   // PrintTree(uk, 0); // Печать дерева
 
   Readln;
