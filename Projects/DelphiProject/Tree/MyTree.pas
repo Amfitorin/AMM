@@ -1,15 +1,19 @@
 // Модуль реализации деревьев
 unit MyTree;
 
+
 interface  // Раздел описаний
 
+uses SysUtils;
 // Описание типа - структура бинарного дерева на указателях:
 // Представление в виде списковой структуры:
 type
   tree_ptr = ^ tree_node;
   tree_node = record
      key: Integer;    // Ключ узла
-     height: Integer; // Высота узла
+     height: Integer; // Высота узла (расстояние в дугах от узла до наиболее удаленного потомка)
+     depth: Integer; // Глубина узла (расстояние в дугах от корня до узла)
+     weight: Integer; // Смещение влево-вправо относительно корневого элемента (по горизонтали)
      //info: string;  // Информационное поле, пока не используется
      //element: Real; // Вещественное значение, пока не используется
      left: tree_ptr; // Левый потомок (указатель)
@@ -17,6 +21,7 @@ type
   end;
 
 procedure FrontOrderLeft(v: tree_ptr);  // 1) Процедура прямого левого обхода с выводом на консоль
+procedure FrontOrderLeftPosition(v: tree_ptr);
 procedure FrontOrderRight(v: tree_ptr); // 2) Процедура прямого правого обхода с выводом на консоль
 procedure BackOrderLeft(v: tree_ptr);   // 3) Процедура обратного левого обхода с выводом на консоль
 procedure BackOrderRight(v: tree_ptr);  // 4) Процедура обратного правого обхода с выводом на консоль
@@ -30,12 +35,29 @@ procedure PrintTree(t: tree_ptr; h: Integer); // 9) Процедура печати дерева с h 
 function HeightNode(t: tree_ptr): Integer;    // 10) Функция возврата высоты узла
 function BalanceFactorNode(p: tree_ptr): Integer; // 11) Процедура для вычисляния balance factor заданного узла
 procedure FixHeight(p: tree_ptr); // 12) Процедура восстановления корректного значения поля height
+//procedure FixDepthNode(p: tree_ptr; rootHeight: Integer); // 13) Процедура восстановления корректного значения поля depth заданного узла
+//procedure FixDepthTree(p: tree_ptr); // 14) Процедура восстановления корректного значения поля depth всех узлов
+
+
 function RotateRight(p: tree_ptr): tree_ptr; // 13) Правый поворот вокруг p
 function RotateLeft(q: tree_ptr): tree_ptr; // 14) Левый поворот вокруг p
 function BalanceNode(p: tree_ptr): tree_ptr; // 15) Функция балансировки при дисбалансе
-function InsertKey(p: tree_ptr; k: Integer): tree_ptr; // 16) Функция вставки ключа k в дерево с корнем p
+
+// 16) Функция вставки ключа k в дерево с корнем p:
+function InsertKey(p: tree_ptr; k: Integer): tree_ptr;
+// 16) Функция вставки ключа k в дерево с корнем p:
+procedure BalancedDepth(v: tree_ptr; d: Integer; w: Integer);
 //
-function FindMinNode(p: tree_ptr): tree_ptr;  // 17) Вспомогательная функция поиска узла с минимальным ключем в дереве p
+// 17) Вспомогательная функция поиска узла с минимальным ключем в дереве p
+function FindMinNode(p: tree_ptr): tree_ptr;
+// 17) Вспомогательная функция поиска узла с минимальным ключем в дереве p
+function FindMaxNode(p: tree_ptr): tree_ptr;
+// 16) Процедура НОРМАЛЬНОЙ печати дерева
+procedure NormPrintTree(p: tree_ptr);
+// 1) Процедура прямого левого обхода с выводом на консоль
+procedure FrontOrderLeftToMatrix(v: tree_ptr);
+
+//
 function RemoveMinNode(p: tree_ptr): tree_ptr; // 18) Cлужебная функция для удаления минимального элемента из заданного дерева:
 function RemoveKey(p: tree_ptr; k: Integer): tree_ptr; // 19) Собственно, сама функция удаления элемента по его ключу // удаление ключа k из дерева p
 //
@@ -45,6 +67,8 @@ function CountLR(v: tree_ptr): Integer; // 22) Функция поиска и суммирования кол
 
 var i: Integer;
     massiv: array of Integer;
+    masPlot: array of Char;
+    msv: array of array of String;  // Динамический двумерный массив на делфи
     
 
 implementation
@@ -65,6 +89,16 @@ begin
     Write(v^.key, ' '); // Напечатать значение ключа
     FrontOrderLeft(v^.left);
     FrontOrderLeft(v^.right);
+  end;
+end;
+// 1.1) Процедура прямого левого обхода с выводом на консоль (с выводом позиции)
+procedure FrontOrderLeftPosition(v: tree_ptr);
+begin
+  if v <> nil then
+  begin
+    Write(v^.key, '[', v^.weight, ',', v^.depth, '] '); // Напечатать значение ключа
+    FrontOrderLeftPosition(v^.left);
+    FrontOrderLeftPosition(v^.right);
   end;
 end;
 
@@ -145,7 +179,7 @@ end;
 // передаем массив, пробегая по которому, будет строится дерево
 function BuildBalancedTree(n: Integer): tree_ptr;
 var p: tree_ptr;
-    x, nl, nr: Integer;
+    nl, nr: Integer;
 begin
   if n = 0 then p:= nil
   else
@@ -189,6 +223,8 @@ begin
 end;
 
 
+
+
 // -----------------------------------------------------------------------------
 // ФУНКЦИИ ДЛЯ РЕАЛИЗАЦИИ АВЛ-ДЕРЕВЬЕВ, ВСТАВКА ЭЛЕМЕНТА
 // (придуманы в 1962 году советскими учеными Адельсон-Вельским и Ландисом)
@@ -218,6 +254,21 @@ begin
   if hL > hR then p^.height:= hL + 1
   else p^.height:= hR + 1;
 end;
+//// 13) Процедура восстановления корректного значения поля depth заданного узла
+//procedure FixDepthNode(p: tree_ptr; rootHeight: Integer);
+//begin
+//  if p <> nil then
+//  begin
+//    p^.depth:= rootHeight - p^.height; //
+//    FixDepthNode(p^.left, rootHeight);
+//    FixDepthNode(p^.right, rootHeight);
+//  end;
+//end;
+//// 14) Процедура восстановления корректного значения поля depth всех узлов
+//procedure FixDepthTree(p: tree_ptr);
+//begin
+//  FixDepthNode(p, p^.height);
+//end;  
 
 // Балансировка узлов
 // В процессе добавления или удаления узлов в АВЛ-дереве возможно возникновение
@@ -276,27 +327,141 @@ begin
     New(p);
     p^.key:= k;
     p^.height:=0;
+    p^.depth:= 0;
+    p^.weight:= 0;
     p^.left:= nil;
     p^.right:= nil;
-    result:= p;
+    BalancedDepth(p, 0, 0);
+    Result:= p;
   end
   else
   begin
     if k < p^.key then p^.left:= InsertKey(p^.left, k)
     else p^.right:= InsertKey(p^.right, k);
+    BalancedDepth(p, 0, 0);
     Result:= BalanceNode(p);
   end;
 end;
 
-// -----------------------------------------------------------------------------
-// ФУНКЦИИ ДЛЯ РЕАЛИЗАЦИИ АВЛ-ДЕРЕВЬЕВ, УДАЛЕНИЕ ЭЛЕМЕНТА
+// 16) Функция вставки ключа k в дерево с корнем p:
+procedure BalancedDepth(v: tree_ptr; d: Integer; w: Integer);
+begin
+  if v <> nil then
+  begin
+    v.depth:= d;
+    v.weight:= w;
+  end;
+  if v^.left <> nil then
+  begin
+    BalancedDepth(v^.left, d+1, w-1);
+  end;
+  if v^.right <> nil then
+  begin
+    BalancedDepth(v^.right, d+1, w+1);
+  end;
+end;
 
 // 17) Вспомогательная функция поиска узла с минимальным ключем в дереве p
 function FindMinNode(p: tree_ptr): tree_ptr;
 begin
   if p^.left <> nil then Result:= FindMinNode(p^.left)
   else Result:= p;
+end;
+
+// 17) Вспомогательная функция поиска узла с минимальным ключем в дереве p
+function FindMaxNode(p: tree_ptr): tree_ptr;
+begin
+  if p^.right <> nil then Result:= FindMaxNode(p^.right)
+  else Result:= p;
+end;
+
+// 16) Процедура НОРМАЛЬНОЙ печати дерева
+procedure NormPrintTree(p: tree_ptr);
+var sizeX, sizeY: Integer; // Размеры матрицы
+    i, j, z: Integer;
+begin
+  if p <> nil then
+  begin
+    if p^.left <> nil then
+    begin
+      NormPrintTree(p^.left);
+    end
+    else
+    begin
+      write(p^.key);
+    end;
+
+    if p^.right <> nil then
+    begin
+      write('  ');
+      NormPrintTree(p^.right);
+    end
+    else
+    begin
+      write('  ');
+      Writeln(p^.key);
+    end; 
+
+  end;
+
+  {*
+  // Читаем из корня высоту дерева, столько и будет строк в матрице:
+  sizeX:= p^.height;
+  //Writeln(sizeX);
+  
+  // Берем разницу смещений крайнего правого и крайнего левого узла (листьев),
+  // это будет количество столбцов в матрице:
+  sizeY:= FindMaxNode(p)^.weight - FindMinNode(p)^.weight;
+
+  // Writeln(sizeY);
+
+  // Выделяем память под наш массив:
+  SetLength(msv, sizeX+1, sizeY+1);
+
+  //
+    for i := 0 to Length(msv)-1  do
+    for j := 0 to Length(msv[i])-1  do
+    msv[i,j]:= ' ';
+
+    //Writeln(Length(msv));
+    //Writeln(Length(msv[0]));
+
+
+  // И перегоняем в него все наши элементы обычным левым обходом:
+   FrontOrderLeftToMatrix(p);
+
+  for i := 0 to Length(msv) - 1 do
+  begin
+    for j := 0 to Length(msv[0]) - 1 do
+    begin
+      write(msv[i,j]); write(' ');
+    end;
+    Writeln;
+  end;
+     ///msv[i,j]:= ;    // FloatToStr(msv[i,j]);
+ *}
 end;  
+
+
+// 1) Процедура прямого левого обхода с занесением в массив
+procedure FrontOrderLeftToMatrix(v: tree_ptr);
+begin
+  if v <> nil then
+  begin
+    //Writeln((v^.depth));
+    msv[v^.depth, v^.weight + Length(msv) - 1]:= IntToStr(v^.key);
+    //Write(msv[(v^.weight + Length(msv)), (v^.depth)], ' '); // Напечатать значение ключа
+    FrontOrderLeftToMatrix(v^.left);
+    FrontOrderLeftToMatrix(v^.right);
+  end;
+end;
+
+
+
+// -----------------------------------------------------------------------------
+// ФУНКЦИИ ДЛЯ РЕАЛИЗАЦИИ АВЛ-ДЕРЕВЬЕВ, УДАЛЕНИЕ ЭЛЕМЕНТА
+
+
 
 // 18) Cлужебная функция для удаления минимального элемента из заданного дерева:
 function RemoveMinNode(p: tree_ptr): tree_ptr;

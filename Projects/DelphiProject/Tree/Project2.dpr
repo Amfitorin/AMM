@@ -52,7 +52,7 @@ begin
   // Пробегаем по массиву и вставлем каждый элемент массива как ключ АВР-дерева:
   for i:=0 to 20 do uk:= InsertKey(uk, arr[i]);
   Write('-> '); Writeln('Исходное дерево (прямой левый обход):');
-  Write('   '); FrontOrderLeft(uk);  Writeln; // Выводим на консоль прямым левым обходом то, что получилось, наше дерево
+  Write('   '); FrontOrderLeftPosition(uk);  Writeln; // Выводим на консоль прямым левым обходом то, что получилось, наше дерево
 
   //
   Writeln;
@@ -62,12 +62,13 @@ begin
   Write('-> '); Write('Количество ключей = '); count:= CountLR(uk); Writeln(count);
   Write('-> '); Write('Удаляемая вершина (среднее значение) = '); srednee:= sum div count; Writeln(srednee);
   Writeln;
+  NormPrintTree(uk);
 
   // FrontOrderLeft(uk);  Writeln;
 
-  uk:= RemoveKey(uk, srednee); // Удаляем ненужный элемент
-  Write('-> '); Writeln('Дерево после удаления элемента (прямой левый обход):');
-  Write('   '); FrontOrderLeft(uk);  Writeln;
+  ////uk:= RemoveKey(uk, srednee); // Удаляем ненужный элемент
+  ////Write('-> '); Writeln('Дерево после удаления элемента (прямой левый обход):');
+  ////Write('   '); FrontOrderLeftPosition(uk);  Writeln;
 
 
   // uk:= RemoveKey(uk, 1);
