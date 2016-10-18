@@ -1,5 +1,5 @@
 // Модуль реализации деревьев
-unit MyTree;
+unit MySimpleTree;
 
 
 interface  // Раздел описаний

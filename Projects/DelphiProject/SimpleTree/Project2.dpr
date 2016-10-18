@@ -5,7 +5,7 @@ program Project2;
 uses
   EsConsole in 'EsConsole.pas', // Подключаем модуль русификации консоли
   // SysUtils, // уже не нужен, есть EsConsole для этих целей
-  MyTree in 'MySimpleTree.pas'; // Модуль реализации простейшего дерева и функций работы с ним
+  MySimpleTree in 'MySimpleTree.pas'; // Модуль реализации простейшего дерева и функций работы с ним
 
 var myFile: Text; // Объявляем переменную типа Text для асоцииации с  текстовым файлом
     tmp: Integer;
