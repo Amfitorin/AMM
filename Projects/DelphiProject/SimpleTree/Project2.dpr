@@ -5,19 +5,15 @@ program Project2;
 uses
   EsConsole in 'EsConsole.pas', // Подключаем модуль русификации консоли
   // SysUtils, // уже не нужен, есть EsConsole для этих целей
-  MyTree in 'MySimpleTree.pas'; // Модуль реализации АВР-дерева и функций работы с ним
+  MyTree in 'MySimpleTree.pas'; // Модуль реализации простейшего дерева и функций работы с ним
 
-var arr: array of Integer;
-    var myFile: Text; // Объявляем переменную типа Text для асоцииации с  текстовым файлом
-    i: Integer;
+var myFile: Text; // Объявляем переменную типа Text для асоцииации с  текстовым файлом
+    tmp: Integer;
 
     uk: tree_ptr;
-
     sum, count, srednee: Integer;
 
 begin
-  { TODO -oUser -cConsole Main : Insert code here }
-
   // Выводим информацию по задаче:
   Writeln('| ------------------------------------------------------- |');
   Writeln('| Бедарев А.А., ПММ, 2 курс, 1 семестр. Задание 2, Вар. 3 |');
@@ -29,28 +25,19 @@ begin
   Writeln('| ------------------------------------------------------- |');
   Writeln;
 
-  SetLength(arr, 21);  // Установка длины одномерного массива
   assign(myFile, 'in.txt'); // Связываем файл с переменной myFile
+
   reset(myFile); // Открываем файл на чтение
 
   // Читаем файл в массив:
-  i:= 0;
+  tmp:= 0;
   while not Eof(myFile) do // Запускаем цикл чтения чисел из файла
     begin
-      readln(myFile, arr[i]); // Считываем число в массив
-      Inc(i);
+      readln(myFile, tmp); // Считываем число во временную перемнную
+      uk:= InsertKey(uk, tmp);  // и добавляем ее в дерево
     end;
   close(myFile); // Закрываем файл, освобождаем ресурсы
 
-  // И переносим массив в сбалансированное дерево (по Вирту)
-  // uk:= MassiveToBalancedTree(arr);
-
-  //for i:=0 to 20 do write(arr[i], ' ');
-  //FrontOrderLeft(uk);  Writeln;
-  //FrontOrderRight(uk); Writeln;
-
-  // Пробегаем по массиву и вставлем каждый элемент массива как ключ АВР-дерева:
-  for i:=0 to 20 do uk:= InsertKey(uk, arr[i]);
   Write('-> '); Writeln('Исходное дерево (прямой левый обход):');
   Write('   '); FrontOrderLeftPosition(uk);  Writeln; // Выводим на консоль прямым левым обходом то, что получилось, наше дерево
 
