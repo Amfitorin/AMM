@@ -2,7 +2,7 @@ unit MySimpleTree; // Модуль реализации простых деревьев
 
 interface // ---- Раздел описаний ---
 
-uses SysUtils,
+uses SysUtils, Math,
     MySimpleSort;  // Подключаем модуль с реализацией сортировок
     
 // Описание типа - структура бинарного дерева на указателях:
@@ -34,7 +34,8 @@ procedure InnerOrderRight(v: tree_ptr); // 6) Процедура правого внутреннего обхо
 //
 procedure PrintTree(t: tree_ptr; h: Integer); // 9) Процедура печати дерева с h отступами
 procedure PrintLeftTree(v: tree_ptr);
-procedure PrintLevel(v: tree_ptr; level: Integer);
+procedure PrintLevel(v: tree_ptr; level: Integer; h: Integer);
+procedure PrintLine(v: tree_ptr; level: Integer; h: Integer);
 
 
 function HeightNode(t: tree_ptr): Integer;    // 10) Функция возврата высоты узла
@@ -187,26 +188,111 @@ end;
 
 // 8) Процедура печати дерева
 procedure PrintLeftTree(v: tree_ptr);
-var lv: Integer;
+var lv, h: Integer;
 begin
-  for lv:= 0 to v^.height do
+  h:= v^.height;
+  for lv:= 0 to h do
   begin
-    PrintLevel(v, lv);
+    PrintLevel(v, lv, h);
+    Writeln;
+    // PrintLine(v, lv, h);
     Writeln;
   end;
 end;
 
 // 9)
-procedure PrintLevel(v: tree_ptr; level: Integer);
+procedure PrintLevel(v: tree_ptr; level: Integer; h: Integer);
+var t: Integer;
 begin
   if v <> nil then
   begin
-    if v^.depth = level then Write(v^.key, ' '); // Напечатать значение ключа
-    PrintLevel(v^.left, level);
-    PrintLevel(v^.right, level);
+    if v^.depth = level then
+    begin
+      t:= 0;
+      while t < (Power(2, v^.height)) -2 do
+      begin
+        write(' ');
+        t:= t + 1;
+      end;
+      Write(v^.key); // Напечатать значение ключа
 
+      t:= 0;
+      while t < (Power(2, v^.height)) -1 do
+      begin
+        write(' ');
+        t:= t + 1;
+      end;
+    end;
+
+    PrintLevel(v^.left, level, h-1);
+    PrintLevel(v^.right, level, h-1);
+
+  end
+  else
+  begin
+      t:= 0;
+      while t < (Power(2, h)) -2 do
+      begin
+        write(' ');
+        t:= t + 1;
+      end;
+      Write(' '); // Напечатать значение ключа
+
+      t:= 0;
+      while t < (Power(2, h)) -1 do
+      begin
+        write(' ');
+        t:= t + 1;
+      end;
   end;
-end;  
+end;
+
+
+procedure PrintLine(v: tree_ptr; level: Integer; h: Integer);
+var t: Integer;
+begin
+  if v <> nil then
+  begin
+    if v^.depth = level then
+    begin
+      t:= 0;
+      while t < (Power(2, v^.height)) -2 do
+      begin
+        write(' ');
+        t:= t + 1;
+      end;
+      Write('|'); // Напечатать значение ключа
+
+      t:= 0;
+      while t < (Power(2, v^.height)) -1 do
+      begin
+        write(' ');
+        t:= t + 1;
+      end;
+    end;
+
+    PrintLine(v^.left, level, h-1);
+    PrintLine(v^.right, level, h-1);
+
+  end
+  else
+  begin
+      t:= 0;
+      while t < (Power(2, h)) -2 do
+      begin
+        write('|');
+        t:= t + 1;
+      end;
+      Write(' '); // Напечатать значение ключа
+
+      t:= 0;
+      while t < (Power(2, h)) -1 do
+      begin
+        write(' ');
+        t:= t + 1;
+      end;
+  end;
+end;
 
 
 

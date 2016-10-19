@@ -45,7 +45,7 @@ begin
   //
   Writeln;
 
-  uk:= LR(uk);  Writeln(FixHeight(uk));
+  //uk:= LR(uk);  Writeln(FixHeight(uk));
 
   // FrontOrderLeft(uk);  Writeln;
   Write('-> '); Writeln('Новое дерево (прямой левый обход):');
@@ -54,8 +54,8 @@ begin
 
 
 
-  PrintLeftTree(uk);
-  PrintTree(uk,0); // PrintTree(uk, 0); // Печать пространственного дерева
+  PrintLeftTree(uk); Writeln;
+  //PrintTree(uk,0); // PrintTree(uk, 0); // Печать пространственного дерева
 
   Readln;
 end.
