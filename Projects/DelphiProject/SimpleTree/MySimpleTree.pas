@@ -33,6 +33,10 @@ procedure InnerOrderRight(v: tree_ptr); // 6) Процедура правого внутреннего обхо
 
 //
 procedure PrintTree(t: tree_ptr; h: Integer); // 9) Процедура печати дерева с h отступами
+procedure PrintLeftTree(v: tree_ptr);
+procedure PrintLevel(v: tree_ptr; level: Integer);
+
+
 function HeightNode(t: tree_ptr): Integer;    // 10) Функция возврата высоты узла
 function FixHeight(v: tree_ptr): Integer; // 11) Функция определения высоты вершины
 
@@ -181,6 +185,28 @@ begin
   end;
 end;
 
+// 8) Процедура печати дерева
+procedure PrintLeftTree(v: tree_ptr);
+var lv: Integer;
+begin
+  for lv:= 0 to v^.height do
+  begin
+    PrintLevel(v, lv);
+    Writeln;
+  end;
+end;
+
+// 9)
+procedure PrintLevel(v: tree_ptr; level: Integer);
+begin
+  if v <> nil then
+  begin
+    if v^.depth = level then Write(v^.key, ' '); // Напечатать значение ключа
+    PrintLevel(v^.left, level);
+    PrintLevel(v^.right, level);
+
+  end;
+end;  
 
 
 
