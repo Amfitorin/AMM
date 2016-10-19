@@ -45,22 +45,13 @@ begin
   //
   Writeln;
 
-  LR(uk);
+  uk:= LR(uk);
 
-  {* Write('-> '); Writeln('Сумма подходящих ключей = ', sum);
-  Write('-> '); Write('Количество ключей = '); count:= CountLR(uk); Writeln(count);
-  Write('-> '); Write('Удаляемая вершина (среднее значение) = '); srednee:= sum div count; Writeln(srednee);
-  Writeln;
-  // NormPrintTree(uk);
-              *}
   // FrontOrderLeft(uk);  Writeln;
-
-  ////uk:= RemoveKey(uk, srednee); // Удаляем ненужный элемент
-  ////Write('-> '); Writeln('Дерево после удаления элемента (прямой левый обход):');
-  ////Write('   '); FrontOrderLeftPosition(uk);  Writeln;
+  Write('-> '); Writeln('Новое дерево (прямой левый обход):');
+  Write('   '); FrontOrderLeftPosition(uk);  Writeln; // Выводим на консоль прямым левым обходом то, что получилось, наше дерево
 
 
-  // uk:= RemoveKey(uk, 1);
   // FrontOrderLeft(uk);  Writeln;
 
 

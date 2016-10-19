@@ -64,7 +64,7 @@ function ParentCount(v: tree_ptr): Integer;
 procedure CopyLR(v: tree_ptr; var arr : Mass);
 function CopyLRtoMassiv(v: tree_ptr): Mass;
 function CountLR(v: tree_ptr): Integer;
-procedure LR(v: tree_ptr);
+function LR(v: tree_ptr): tree_ptr;
 procedure PrintArr(arr: Mass);
 
 var i: Integer;
@@ -365,7 +365,19 @@ begin
     // Result:= BalanceNode(p);
     Result:= p;
   end;
-end;  
+end;
+
+// 18) Cлужебная функция для удаления максимального элемента из заданного дерева:
+function RemoveMaxNode(p: tree_ptr): tree_ptr;
+begin
+  if (p^.right = nil) then Result:= p^.left
+  else
+  begin
+    p^.right:= RemoveMaxNode(p^.right);
+    // Result:= BalanceNode(p);
+    Result:= p;
+  end;
+end;
 
 // 19) Собственно, сама функция удаления элемента по его ключу:
 function RemoveKey(p: tree_ptr; k: Integer): tree_ptr; // удаление ключа k из дерева p
@@ -382,15 +394,15 @@ begin
           // Writeln(p^.key); // 11 Для отладки
           q:= p^.left; // Запомнили левое поддерево   // 10
           r:=p^.right; // Запомнили правое поддерево  // 13
-          if r = nil then p:= q   // Если правого поддререва нет, просто переносим на место строго узла новый
+          if r = nil then p:= q   // Если правого поддерева нет, просто переносим на место строго узла новый
           else
           begin
             min:= FindMinNode(r); // иначе ищем минимальный элемент в правом поддереве и запоминаем его
             // Writeln(min^.key); // 12 Для отладки
-            min^.right:= RemoveMinNode(r); // Перенесли в правой поддерево 12 элемента элемент 13 и всю его цепочку
+            min^.right:= RemoveMinNode(r); // Перенесли в правое поддерево 12 элемента элемент 13 и всю его цепочку
             // Writeln((min^.right)^.key);  // Для отладки
             min^.left:= q;
-            p:= min; // Вот этого не было
+            p:= min; // Вот этого не было // p:= min; // Вот этого не было
             Result:= p; //BalanceNode(min);
           end;  
         end;  
@@ -470,7 +482,7 @@ end;
 // вершину из вершин дерева, у которых количество потомков в левом поддереве
 // отличается от количества потомков в правом поддереве на 1
 
-procedure LR(v: tree_ptr);
+function LR(v: tree_ptr): tree_ptr;
 var arr: Mass;
     n: Integer; // Количество элементов
     key: Integer; // Найденный ключ средней по значению вершины
@@ -485,7 +497,6 @@ begin
     arr:= CopyLRtoMassiv(v); // Иначе все хорошо, переносим все подходящие элементы в массив
     QuickSortNonRecursive(arr); // Сортируем массив
     PrintArr(arr); // Печатаем все элементы массива
-
     if (n mod 2) = 0 then
     begin
       Writeln('Подходящих элементов четное количество (', n, ')');
@@ -493,14 +504,17 @@ begin
     end
     else
     begin
+      key:= arr[(n div 2)];
       Writeln('Подходящих элементов нечетное количество (', n, ')');
-      Writeln('Средняя по значению вершина: ', arr[(n mod 2)]);
-
-
+      Writeln('Средняя по значению вершина: ', key);
+      // И удаляем правым удалением ненужную вершину:
+      v:= RemoveKey(v, key); // удаление ключа k из дерева p
+      BalancedDepth(v, 0, 0); // Пересчитываем все глубины и смещения
 
       
     end;
   end;
+  Result:= v;
 end;
 
 procedure PrintArr(arr: Mass);
