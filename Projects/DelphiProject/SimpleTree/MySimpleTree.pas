@@ -1,10 +1,11 @@
-// Модуль реализации деревьев
+// Модуль реализации постых деревьев
 unit MySimpleTree;
-
 
 interface  // Раздел описаний
 
-uses SysUtils;
+uses SysUtils,
+    MySimpleSort;  // Подключаем модель с реализацией сортировок
+    
 // Описание типа - структура бинарного дерева на указателях:
 // Представление в виде списковой структуры:
 type
@@ -20,6 +21,9 @@ type
      right: tree_ptr; // Правый потомок (указатель)
   end;
 
+type
+  Mass = array of Integer;
+
 procedure FrontOrderLeft(v: tree_ptr);  // 1) Процедура прямого левого обхода с выводом на консоль
 procedure FrontOrderLeftPosition(v: tree_ptr);
 procedure FrontOrderRight(v: tree_ptr); // 2) Процедура прямого правого обхода с выводом на консоль
@@ -27,9 +31,7 @@ procedure BackOrderLeft(v: tree_ptr);   // 3) Процедура обратного левого обхода 
 procedure BackOrderRight(v: tree_ptr);  // 4) Процедура обратного правого обхода с выводом на консоль
 procedure InnerOrderLeft(v: tree_ptr);  // 5) Процедура левого внутреннего обхода с выводом на консоль
 procedure InnerOrderRight(v: tree_ptr); // 6) Процедура правого внутреннего обхода с выводом на консоль
-//
-function BuildBalancedTree(n: Integer): tree_ptr;
-function MassiveToBalancedTree(arr: array of Integer): tree_ptr;
+
 //
 procedure PrintTree(t: tree_ptr; h: Integer); // 9) Процедура печати дерева с h отступами
 function HeightNode(t: tree_ptr): Integer;    // 10) Функция возврата высоты узла
@@ -39,9 +41,6 @@ procedure FixHeight(p: tree_ptr); // 12) Процедура восстановления корректного зн
 //procedure FixDepthTree(p: tree_ptr); // 14) Процедура восстановления корректного значения поля depth всех узлов
 
 
-function RotateRight(p: tree_ptr): tree_ptr; // 13) Правый поворот вокруг p
-function RotateLeft(q: tree_ptr): tree_ptr; // 14) Левый поворот вокруг p
-function BalanceNode(p: tree_ptr): tree_ptr; // 15) Функция балансировки при дисбалансе
 
 // 16) Функция вставки ключа k в дерево с корнем p:
 function InsertKey(p: tree_ptr; k: Integer): tree_ptr;
@@ -61,9 +60,12 @@ procedure FrontOrderLeftToMatrix(v: tree_ptr);
 function RemoveMinNode(p: tree_ptr): tree_ptr; // 18) Cлужебная функция для удаления минимального элемента из заданного дерева:
 function RemoveKey(p: tree_ptr; k: Integer): tree_ptr; // 19) Собственно, сама функция удаления элемента по его ключу // удаление ключа k из дерева p
 //
-function ParentCount(v: tree_ptr): Integer; // 20) Рекурсивная функция подсчета количества наследников у узла
-function SumLR(v: tree_ptr): Integer; // 21) Функция поиска и суммирования ключей
-function CountLR(v: tree_ptr): Integer; // 22) Функция поиска и суммирования количества узлов
+function ParentCount(v: tree_ptr): Integer;
+procedure CopyLR(v: tree_ptr; var arr : Mass);
+function CopyLRtoMassiv(v: tree_ptr): Mass;
+function CountLR(v: tree_ptr): Integer;
+procedure LR(v: tree_ptr);
+procedure PrintArr(arr: Mass);
 
 var i: Integer;
     massiv: array of Integer;
@@ -174,37 +176,6 @@ begin
 end;
 
 // -----------------------------------------------------------------------------
-// ИДЕАЛЬНО СБАЛАНСИРОВАННОЕ ДЕРЕВО (пробное)
-// 7) Функция формирования идеально сбалансированного дерева
-// передаем массив, пробегая по которому, будет строится дерево
-function BuildBalancedTree(n: Integer): tree_ptr;
-var p: tree_ptr;
-    nl, nr: Integer;
-begin
-  if n = 0 then p:= nil
-  else
-  begin
-    nl:= n div 2;
-    nr:= n - (nl + 1);
-    New(p);
-    p^.key:= massiv[i];
-    Inc(i);
-    p^.left:= BuildBalancedTree(nl);
-    p^.right:= BuildBalancedTree(nr); //
-  end;
-  BuildBalancedTree:= p;
-end;
-
-// 8) Функция передачи массива для формирования идеально сбалансированного дерева
-function MassiveToBalancedTree(arr: array of Integer): tree_ptr;
-begin
-  SetLength(massiv, Length(arr));  // Установка длины одномерного массива
-  for i:=0 to Length(arr)-1 do massiv[i]:= arr[i];
-  i:=0;
-  MassiveToBalancedTree:= BuildBalancedTree(Length(massiv));
-end;
-
-// -----------------------------------------------------------------------------
 // ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
 // (придуманы в 1962 году советскими учеными Адельсон-Вельским и Ландисом)
 
@@ -276,49 +247,6 @@ end;
 // т.е. возникает расбалансировка поддерева. Для выправления ситуации
 // применяются хорошо известные повороты вокруг тех или иных узлов дерева.
 
-// 13) Правый поворот вокруг p:
-function RotateRight(p: tree_ptr): tree_ptr;
-var q: tree_ptr;
-begin
-  q:= p^.left;
-  p^.left:= q^.right;
-  q^.right:= p;
-  FixHeight(p);
-  FixHeight(q);
-  RotateRight:= q;
-end;
-
-// 14) Левый поворот вокруг p:
-function RotateLeft(q: tree_ptr): tree_ptr;
-var p: tree_ptr;
-begin
-  p:= q^.right;
-  q^.right:= p^.left;
-  p^.left:= q;
-  FixHeight(q);
-  FixHeight(p);
-  RotateLeft:= p;
-end;
-
-// 15) Функция балансировки при дисбалансе:
-function BalanceNode(p: tree_ptr): tree_ptr; // Балансировка узла p
-begin
-  FixHeight(p);
-  if BalanceFactorNode(p) = 2 then
-  begin
-    if BalanceFactorNode(p^.right) < 0 then p^.right:= RotateRight(p^.right);
-    Result:= RotateLeft(p);
-  end
-  else
-  if BalanceFactorNode(p) = -2 then
-  begin
-    if BalanceFactorNode(p^.left) > 0 then
-    p^.left:= RotateLeft(p^.left);
-    Result:= RotateRight(p);
-  end
-  else BalanceNode:= p; // Балансировка не нужна
-end;
-
 // 16) Функция вставки ключа k в дерево с корнем p:
 function InsertKey(p: tree_ptr; k: Integer): tree_ptr;
 begin
@@ -339,11 +267,12 @@ begin
     if k < p^.key then p^.left:= InsertKey(p^.left, k)
     else p^.right:= InsertKey(p^.right, k);
     BalancedDepth(p, 0, 0);
-    Result:= BalanceNode(p);
+    // Result:= BalanceNode(p);
+    Result:= p;
   end;
 end;
 
-// 16) Функция вставки ключа k в дерево с корнем p:
+// 16) Функция пересчета глубины узлов:
 procedure BalancedDepth(v: tree_ptr; d: Integer; w: Integer);
 begin
   if v <> nil then
@@ -403,43 +332,6 @@ begin
     end; 
 
   end;
-
-  {*
-  // Читаем из корня высоту дерева, столько и будет строк в матрице:
-  sizeX:= p^.height;
-  //Writeln(sizeX);
-  
-  // Берем разницу смещений крайнего правого и крайнего левого узла (листьев),
-  // это будет количество столбцов в матрице:
-  sizeY:= FindMaxNode(p)^.weight - FindMinNode(p)^.weight;
-
-  // Writeln(sizeY);
-
-  // Выделяем память под наш массив:
-  SetLength(msv, sizeX+1, sizeY+1);
-
-  //
-    for i := 0 to Length(msv)-1  do
-    for j := 0 to Length(msv[i])-1  do
-    msv[i,j]:= ' ';
-
-    //Writeln(Length(msv));
-    //Writeln(Length(msv[0]));
-
-
-  // И перегоняем в него все наши элементы обычным левым обходом:
-   FrontOrderLeftToMatrix(p);
-
-  for i := 0 to Length(msv) - 1 do
-  begin
-    for j := 0 to Length(msv[0]) - 1 do
-    begin
-      write(msv[i,j]); write(' ');
-    end;
-    Writeln;
-  end;
-     ///msv[i,j]:= ;    // FloatToStr(msv[i,j]);
- *}
 end;  
 
 
@@ -459,7 +351,7 @@ end;
 
 
 // -----------------------------------------------------------------------------
-// ФУНКЦИИ ДЛЯ РЕАЛИЗАЦИИ АВЛ-ДЕРЕВЬЕВ, УДАЛЕНИЕ ЭЛЕМЕНТА
+// ФУНКЦИИ ДЛЯ РЕАЛИЗАЦИИ ДЕРЕВЬЕВ, УДАЛЕНИЕ ЭЛЕМЕНТА
 
 
 
@@ -470,7 +362,8 @@ begin
   else
   begin
     p^.left:= RemoveMinNode(p^.left);
-    Result:= BalanceNode(p);
+    // Result:= BalanceNode(p);
+    Result:= p;
   end;
 end;  
 
@@ -498,12 +391,12 @@ begin
             // Writeln((min^.right)^.key);  // Для отладки
             min^.left:= q;
             p:= min; // Вот этого не было
-            Result:= BalanceNode(min);
+            Result:= p; //BalanceNode(min);
           end;  
         end;  
   end;
   // И если не пустой указатель, то балансируем узел, или просто возвращаем nil
-  if p <> nil then Result:= BalanceNode(p)
+  if p <> nil then Result:= p //BalanceNode(p)
   else Result:= nil;
 end;  
 
@@ -521,24 +414,43 @@ begin
   else Result:= 0;
 end;
 
-// 21) Функция поиска и суммирования ключей тех узлов, у которых количество
+// 21) Процедура поиска и копирования в массив ключей тех узлов, у которых количество
 // потомков в левом поддереве отличается от количества потомков в правом
 // поддереве на 1
-function SumLR(v: tree_ptr): Integer;
+// Передаем указатель на дерево, ссылку на массив и номер элемента
+procedure CopyLR(v: tree_ptr; var arr : Mass);
 begin
   if v <> nil then
   begin
     if Abs( ParentCount(v^.left) - ParentCount(v^.right) ) = 1 then
     begin
-      Write(v^.key, ' '); // Напечатать значение ключа
-      Result:= v^.key + SumLR(v^.left) + SumLR(v^.right);  
-    end
-    else Result:= SumLR(v^.left) + SumLR(v^.right);
-  end
-  else Result:=0;
+      i:= i + 1;
+      arr[i]:= v^.key; // Скопировать значение ключа
+      // Writeln(arr[i]);
+    end;
+    CopyLR(v^.left, arr);
+    CopyLR(v^.right, arr);
+  end;
 end;
 
-// 22) Функция поиска и суммирования количества узлов, у которых количество
+// Функция копирования в массив
+function CopyLRtoMassiv(v: tree_ptr): Mass;
+var size : Integer;
+    arr : Mass;
+begin
+  if v <> nil then
+  begin
+    // Определяем количество элементов, чтобы знать, какого размера создать массив:
+    size:= CountLR(v);
+    SetLength(arr, size);  // Выставляем длину одномерного массива
+    i:= -1;
+    CopyLR(v, arr); // Выполняем копирование подходящих значений в массив
+    Result:= arr;
+  end
+  else Result:= nil;
+end;
+
+// 22) Функция подсчета количества узлов, у которых количество
 // потомков в левом поддереве отличается от количества потомков в правом
 // поддереве на 1
 function CountLR(v: tree_ptr): Integer;
@@ -552,6 +464,54 @@ begin
     else Result:= CountLR(v^.left) + CountLR(v^.right);
   end
   else Result:=0;
+end;
+
+// Процедура находжения и удаления (правым удалением) среднюю по значению
+// вершину из вершин дерева, у которых количество потомков в левом поддереве
+// отличается от количества потомков в правом поддереве на 1
+
+procedure LR(v: tree_ptr);
+var arr: Mass;
+    n: Integer; // Количество элементов
+    key: Integer; // Найденный ключ средней по значению вершины
+begin
+  // Определяем количество подходящих элементов:
+  n:= CountLR(v);
+  //Writeln(n);
+  if n = 0 then
+    Writeln('Подходящих узлов не найдено. Завершение программы')
+  else
+  begin
+    arr:= CopyLRtoMassiv(v); // Иначе все хорошо, переносим все подходящие элементы в массив
+    QuickSortNonRecursive(arr); // Сортируем массив
+    PrintArr(arr); // Печатаем все элементы массива
+
+    if (n mod 2) = 0 then
+    begin
+      Writeln('Подходящих элементов четное количество (', n, ')');
+      Writeln('Нет медианы среди найденных узлов. Завершение программы');
+    end
+    else
+    begin
+      Writeln('Подходящих элементов нечетное количество (', n, ')');
+      Writeln('Средняя по значению вершина: ', arr[(n mod 2)]);
+
+
+
+      
+    end;
+  end;
+end;
+
+procedure PrintArr(arr: Mass);
+var j: Integer;
+begin
+  write('Подходящие элементы: ');
+  for j:= 0 to Length(arr)-1 do
+  begin
+    write(arr[j], ' ');
+  end;
+  Writeln;
 end;
 
 

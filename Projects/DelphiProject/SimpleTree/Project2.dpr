@@ -3,9 +3,10 @@ program Project2;
 {$APPTYPE CONSOLE}
 
 uses
-  EsConsole in 'EsConsole.pas', // Подключаем модуль русификации консоли
-  // SysUtils, // уже не нужен, есть EsConsole для этих целей
-  MySimpleTree in 'MySimpleTree.pas'; // Модуль реализации простейшего дерева и функций работы с ним
+  EsConsole in 'EsConsole.pas',
+  MySimpleTree in 'MySimpleTree.pas';
+
+// Модуль реализации простейшего дерева и функций работы с ним
 
 var myFile: Text; // Объявляем переменную типа Text для асоцииации с  текстовым файлом
     tmp: Integer;
@@ -43,14 +44,15 @@ begin
 
   //
   Writeln;
-  Write('-> '); Write('Подходящие вершины: '); sum:= SumLR(uk);
-  Writeln;
-  Write('-> '); Writeln('Сумма подходящих ключей = ', sum);
+
+  LR(uk);
+
+  {* Write('-> '); Writeln('Сумма подходящих ключей = ', sum);
   Write('-> '); Write('Количество ключей = '); count:= CountLR(uk); Writeln(count);
   Write('-> '); Write('Удаляемая вершина (среднее значение) = '); srednee:= sum div count; Writeln(srednee);
   Writeln;
-  NormPrintTree(uk);
-
+  // NormPrintTree(uk);
+              *}
   // FrontOrderLeft(uk);  Writeln;
 
   ////uk:= RemoveKey(uk, srednee); // Удаляем ненужный элемент
@@ -62,7 +64,7 @@ begin
   // FrontOrderLeft(uk);  Writeln;
 
 
-  // PrintTree(uk, 0); // Печать пространственного дерева
+  ////////PrintTree(uk, 0); // Печать пространственного дерева
 
   Readln;
 end.
