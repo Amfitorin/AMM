@@ -45,7 +45,7 @@ begin
   //
   Writeln;
 
-  uk:= LR(uk);
+  uk:= LR(uk);  Writeln(FixHeight(uk));
 
   // FrontOrderLeft(uk);  Writeln;
   Write('-> '); Writeln('Новое дерево (прямой левый обход):');

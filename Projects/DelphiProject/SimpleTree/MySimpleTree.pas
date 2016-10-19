@@ -1,7 +1,6 @@
-// Модуль реализации постых деревьев
-unit MySimpleTree;
+unit MySimpleTree; // Модуль реализации простых деревьев
 
-interface  // Раздел описаний
+interface // ---- Раздел описаний ---
 
 uses SysUtils,
     MySimpleSort;  // Подключаем модель с реализацией сортировок
@@ -24,8 +23,8 @@ type
 type
   Mass = array of Integer;
 
-procedure FrontOrderLeft(v: tree_ptr);  // 1) Процедура прямого левого обхода с выводом на консоль
-procedure FrontOrderLeftPosition(v: tree_ptr);
+procedure FrontOrderLeft(v: tree_ptr);  // 1) Процедура прямого левого обхода с выводом ключа на консоль
+procedure FrontOrderLeftPosition(v: tree_ptr);  // 1-1) Процедура прямого левого обхода с выводом ключа и положения на консоль
 procedure FrontOrderRight(v: tree_ptr); // 2) Процедура прямого правого обхода с выводом на консоль
 procedure BackOrderLeft(v: tree_ptr);   // 3) Процедура обратного левого обхода с выводом на консоль
 procedure BackOrderRight(v: tree_ptr);  // 4) Процедура обратного правого обхода с выводом на консоль
@@ -35,17 +34,12 @@ procedure InnerOrderRight(v: tree_ptr); // 6) Процедура правого внутреннего обхо
 //
 procedure PrintTree(t: tree_ptr; h: Integer); // 9) Процедура печати дерева с h отступами
 function HeightNode(t: tree_ptr): Integer;    // 10) Функция возврата высоты узла
-function BalanceFactorNode(p: tree_ptr): Integer; // 11) Процедура для вычисляния balance factor заданного узла
-procedure FixHeight(p: tree_ptr); // 12) Процедура восстановления корректного значения поля height
-//procedure FixDepthNode(p: tree_ptr; rootHeight: Integer); // 13) Процедура восстановления корректного значения поля depth заданного узла
-//procedure FixDepthTree(p: tree_ptr); // 14) Процедура восстановления корректного значения поля depth всех узлов
-
+function FixHeight(v: tree_ptr): Integer; // 11) Функция определения высоты вершины
 
 
 // 16) Функция вставки ключа k в дерево с корнем p:
 function InsertKey(p: tree_ptr; k: Integer): tree_ptr;
-// 16) Функция вставки ключа k в дерево с корнем p:
-procedure BalancedDepth(v: tree_ptr; d: Integer; w: Integer);
+procedure BalancedDepthWeightHeight(v: tree_ptr; d: Integer; w: Integer);
 //
 // 17) Вспомогательная функция поиска узла с минимальным ключем в дереве p
 function FindMinNode(p: tree_ptr): tree_ptr;
@@ -73,8 +67,8 @@ var i: Integer;
     msv: array of array of String;  // Динамический двумерный массив на делфи
     
 
-implementation
-// ---- Раздел реализаций ---
+implementation // ---- Раздел реализаций ---
+
 
 // -----------------------------------------------------------------------------
 // ПРЯМОЙ ОБХОД
@@ -98,7 +92,7 @@ procedure FrontOrderLeftPosition(v: tree_ptr);
 begin
   if v <> nil then
   begin
-    Write(v^.key, '[', v^.weight, ',', v^.depth, '] '); // Напечатать значение ключа
+    Write(v^.key, '[', v^.depth, ',', v^.weight, ',', v^.height, '] '); // Напечатать значение ключа
     FrontOrderLeftPosition(v^.left);
     FrontOrderLeftPosition(v^.right);
   end;
@@ -208,44 +202,19 @@ begin
   else HeightNode:= 0;
 end;
 
-// 11) Процедура для вычисляния balance factor заданного узла (работает только с ненулевыми указателями):
-function BalanceFactorNode(p: tree_ptr): Integer;
+function FixHeight(v: tree_ptr): Integer;
+var left, right: Integer;
 begin
-  BalanceFactorNode:= HeightNode(p^.right) - HeightNode(p^.left);
+  if v <> nil then
+  begin
+    left := FixHeight(v^.left);
+    right := FixHeight(v^.right);
+    if left > right then FixHeight := left+1
+    else Result := right+1
+  end
+  else
+  Result := -1;
 end;
-
-// 12) Процедура восстановления корректного значения поля height заданного узла
-//(при условии, что значения этого поля в правом и левом дочерних узлах являются
-// корректными):
-procedure FixHeight(p: tree_ptr);
-var hL, hR: Integer;
-begin
-  hL:= HeightNode(p^.left);
-  hR:= HeightNode(p^.right);
-  if hL > hR then p^.height:= hL + 1
-  else p^.height:= hR + 1;
-end;
-//// 13) Процедура восстановления корректного значения поля depth заданного узла
-//procedure FixDepthNode(p: tree_ptr; rootHeight: Integer);
-//begin
-//  if p <> nil then
-//  begin
-//    p^.depth:= rootHeight - p^.height; //
-//    FixDepthNode(p^.left, rootHeight);
-//    FixDepthNode(p^.right, rootHeight);
-//  end;
-//end;
-//// 14) Процедура восстановления корректного значения поля depth всех узлов
-//procedure FixDepthTree(p: tree_ptr);
-//begin
-//  FixDepthNode(p, p^.height);
-//end;  
-
-// Балансировка узлов
-// В процессе добавления или удаления узлов в АВЛ-дереве возможно возникновение
-// ситуации, когда balance factor некоторых узлов оказывается равными 2 или -2,
-// т.е. возникает расбалансировка поддерева. Для выправления ситуации
-// применяются хорошо известные повороты вокруг тех или иных узлов дерева.
 
 // 16) Функция вставки ключа k в дерево с корнем p:
 function InsertKey(p: tree_ptr; k: Integer): tree_ptr;
@@ -259,34 +228,34 @@ begin
     p^.weight:= 0;
     p^.left:= nil;
     p^.right:= nil;
-    BalancedDepth(p, 0, 0);
+    BalancedDepthWeightHeight(p, 0, 0);
     Result:= p;
   end
   else
   begin
     if k < p^.key then p^.left:= InsertKey(p^.left, k)
     else p^.right:= InsertKey(p^.right, k);
-    BalancedDepth(p, 0, 0);
-    // Result:= BalanceNode(p);
+    BalancedDepthWeightHeight(p, 0, 0);
     Result:= p;
   end;
 end;
 
-// 16) Функция пересчета глубины узлов:
-procedure BalancedDepth(v: tree_ptr; d: Integer; w: Integer);
+// 16) Функция пересчета глубины, смещения от корня влево-вправо и высотыузлов:
+procedure BalancedDepthWeightHeight(v: tree_ptr; d: Integer; w: Integer); // Пересчитываем глубину, высоту и смещение узла
 begin
   if v <> nil then
   begin
     v.depth:= d;
     v.weight:= w;
+    v.height:= FixHeight(v);
   end;
   if v^.left <> nil then
   begin
-    BalancedDepth(v^.left, d+1, w-1);
+    BalancedDepthWeightHeight(v^.left, d+1, w-1);
   end;
   if v^.right <> nil then
   begin
-    BalancedDepth(v^.right, d+1, w+1);
+    BalancedDepthWeightHeight(v^.right, d+1, w+1);
   end;
 end;
 
@@ -509,7 +478,7 @@ begin
       Writeln('Средняя по значению вершина: ', key);
       // И удаляем правым удалением ненужную вершину:
       v:= RemoveKey(v, key); // удаление ключа k из дерева p
-      BalancedDepth(v, 0, 0); // Пересчитываем все глубины и смещения
+      BalancedDepthWeightHeight(v, 0, 0); // Пересчитываем все глубины и смещения
 
       
     end;
