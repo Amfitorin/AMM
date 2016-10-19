@@ -52,10 +52,10 @@ begin
   Write('   '); FrontOrderLeftPosition(uk);  Writeln; // Выводим на консоль прямым левым обходом то, что получилось, наше дерево
 
 
-  // FrontOrderLeft(uk);  Writeln;
 
 
-  ////////PrintTree(uk, 0); // Печать пространственного дерева
+
+  PrintTree(uk, 0); // Печать пространственного дерева
 
   Readln;
 end.

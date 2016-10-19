@@ -3,7 +3,7 @@ unit MySimpleTree; // Модуль реализации простых деревьев
 interface // ---- Раздел описаний ---
 
 uses SysUtils,
-    MySimpleSort;  // Подключаем модель с реализацией сортировок
+    MySimpleSort;  // Подключаем модуль с реализацией сортировок
     
 // Описание типа - структура бинарного дерева на указателях:
 // Представление в виде списковой структуры:
@@ -45,11 +45,6 @@ procedure BalancedDepthWeightHeight(v: tree_ptr; d: Integer; w: Integer);
 function FindMinNode(p: tree_ptr): tree_ptr;
 // 17) Вспомогательная функция поиска узла с минимальным ключем в дереве p
 function FindMaxNode(p: tree_ptr): tree_ptr;
-// 16) Процедура НОРМАЛЬНОЙ печати дерева
-procedure NormPrintTree(p: tree_ptr);
-// 1) Процедура прямого левого обхода с выводом на консоль
-procedure FrontOrderLeftToMatrix(v: tree_ptr);
-
 //
 function RemoveMinNode(p: tree_ptr): tree_ptr; // 18) Cлужебная функция для удаления минимального элемента из заданного дерева:
 function RemoveKey(p: tree_ptr; k: Integer): tree_ptr; // 19) Собственно, сама функция удаления элемента по его ключу // удаление ключа k из дерева p
@@ -77,7 +72,7 @@ implementation // ---- Раздел реализаций ---
 // чем его поддеревья. Если после корня посещается его левое (правое)
 // поддерево, то обход называется прямым левым (правым) обходом.
 
-// 1) Процедура прямого левого обхода с выводом на консоль
+// 1) Процедура прямого левого обхода с выводом ключа на консоль
 procedure FrontOrderLeft(v: tree_ptr);
 begin
   if v <> nil then
@@ -87,7 +82,7 @@ begin
     FrontOrderLeft(v^.right);
   end;
 end;
-// 1.1) Процедура прямого левого обхода с выводом на консоль (с выводом позиции)
+// 1.1) Процедура прямого левого обхода с выводом ключа и позиции на консоль
 procedure FrontOrderLeftPosition(v: tree_ptr);
 begin
   if v <> nil then
@@ -171,9 +166,8 @@ end;
 
 // -----------------------------------------------------------------------------
 // ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
-// (придуманы в 1962 году советскими учеными Адельсон-Вельским и Ландисом)
 
-// 9) Процедура печати дерева с h отступами
+// 7) Процедура печати дерева с h отступами
 procedure PrintTree(t: tree_ptr; h: Integer);
 var j: Integer;
 begin
@@ -191,8 +185,7 @@ end;
 
 
 // -----------------------------------------------------------------------------
-// ФУНКЦИИ ДЛЯ РЕАЛИЗАЦИИ АВЛ-ДЕРЕВЬЕВ, ВСТАВКА ЭЛЕМЕНТА
-// (придуманы в 1962 году советскими учеными Адельсон-Вельским и Ландисом)
+// ФУНКЦИИ ДЛЯ РЕАЛИЗАЦИИ ДЕРЕВА, ВСТАВКА ЭЛЕМЕНТА
 
 // 10) Функция возврата высоты узла:
 function HeightNode(t: tree_ptr): Integer;
@@ -273,56 +266,9 @@ begin
   else Result:= p;
 end;
 
-// 16) Процедура НОРМАЛЬНОЙ печати дерева
-procedure NormPrintTree(p: tree_ptr);
-var sizeX, sizeY: Integer; // Размеры матрицы
-    i, j, z: Integer;
-begin
-  if p <> nil then
-  begin
-    if p^.left <> nil then
-    begin
-      NormPrintTree(p^.left);
-    end
-    else
-    begin
-      write(p^.key);
-    end;
-
-    if p^.right <> nil then
-    begin
-      write('  ');
-      NormPrintTree(p^.right);
-    end
-    else
-    begin
-      write('  ');
-      Writeln(p^.key);
-    end; 
-
-  end;
-end;  
-
-
-// 1) Процедура прямого левого обхода с занесением в массив
-procedure FrontOrderLeftToMatrix(v: tree_ptr);
-begin
-  if v <> nil then
-  begin
-    //Writeln((v^.depth));
-    msv[v^.depth, v^.weight + Length(msv) - 1]:= IntToStr(v^.key);
-    //Write(msv[(v^.weight + Length(msv)), (v^.depth)], ' '); // Напечатать значение ключа
-    FrontOrderLeftToMatrix(v^.left);
-    FrontOrderLeftToMatrix(v^.right);
-  end;
-end;
-
-
 
 // -----------------------------------------------------------------------------
-// ФУНКЦИИ ДЛЯ РЕАЛИЗАЦИИ ДЕРЕВЬЕВ, УДАЛЕНИЕ ЭЛЕМЕНТА
-
-
+// ФУНКЦИИ ДЛЯ РЕАЛИЗАЦИИ ДЕРЕВЬЕВ, УДАЛЕНИЕ ЭЛЕМЕНТА  
 
 // 18) Cлужебная функция для удаления минимального элемента из заданного дерева:
 function RemoveMinNode(p: tree_ptr): tree_ptr;
