@@ -1,4 +1,5 @@
-unit mySortLib;
+unit MySimpleSort;
+
 
 interface
 // Объявление функций и процедур:

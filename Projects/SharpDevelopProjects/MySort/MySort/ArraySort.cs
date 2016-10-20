@@ -74,7 +74,7 @@ namespace MySort
 	    
 		    
 	    // Метод сортировки прямыми вставками:
-	    public void selectionSort() 
+	    public void insertionSort() 
 	    {
 	        int i, j;
 	        // Запускаем сортировку промежуточного массива:
@@ -93,8 +93,8 @@ namespace MySort
 	        }
 	    }
 	
-	    // Метод сортировки прямым включением Модификация бисекцией
-	    public void selectionSortBisection()
+	    // Метод сортировки прямыми вставками Модификация бисекцией
+	    public void insertionSortBisection()
 	    {
 	        int i, j;
 	        int M, L, R;
@@ -116,7 +116,7 @@ namespace MySort
 	    }
 		
 	// Метод быстрой сортировки с рекурсией:
-	public void quickSort(int L = 1, int R = size - 1){
+	public void Sort(int L, int R){
 		int i, j;
 		int x, w;
 		
@@ -125,14 +125,17 @@ namespace MySort
 		x = arr[(L + R) / 2];
 		do{
 			while (arr[i] < x) i++;
-			while (x < arr[j) j--;
+			while (x < arr[j]) j--;
 			if (i <= j){
 				w = arr[i]; arr[i] = arr[j]; arr[j] = w; i++; j--;
 			}
 		} while (i <= j);
-		if (L < j) quickSort(L, j);
-		if (i < R) quickSort(i, R);
+		if (L < j) Sort(L, j);
+		if (i < R) Sort(i, R);
 	}
+    public void quickSort(){
+        Sort(1, size - 1);
+    }
 	    
     // Метод быстрой сортировки без рекурсии:
     public void quickSortNonRecursive(){
@@ -168,7 +171,7 @@ namespace MySort
     }
 
     // Метод сортировки прямым выбором:
-    public void selesctionSort(){
+    public void selectionSort(){
         int i, j, k;
         int tmp;
         // Запускаем сортировку массива:
@@ -232,6 +235,36 @@ namespace MySort
             R = k - 1; // Сдвигаем правую границу влево
         } while (L <= R);
     }
+    
+   // Метод сортировки Шелла (несколько последовательных сортировок с разной дальностью):
+    public void shellSort(){
+        const int T = 4; // Всего T расстояний сортировки
+        int i, j, k, m;
+        int tmp;
+        int[] h = new int[T]; // Массив расстояний сортировок
 
+        // Заускаем сортировку массива:
+        h[0] = 9; h[1] = 5; h[2] = 3; h[3] = 1; // Задаем расстояния сортировки в массив расстояний
+        for (m = 0; m < T; m++){
+            k = h[m];
+            for (i = k; i < size; i++){ // ?? i = k+1 из-за того, что у нас нулевой элемент используется в других сортировках как заглушка
+                tmp = arr[i]; j = i - k;
+                while ( (j >= k) && (tmp < arr[j]) ){
+                    arr[j+k] = arr[j];
+                    j = j - k;
+                }
+                if ( (j >= k) || (tmp >= arr[j]) ){
+                    arr[j+k] = tmp;
+                }
+                else {
+                    arr[j+k] = arr[j];
+                    arr[j] = tmp;
+                }
+            }
+        }
+    }
+
+   // Для будущих реализаций сортировок: ...
+   
 	}
 }

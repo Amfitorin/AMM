@@ -36,24 +36,76 @@ namespace MySort
 	        arr.add(66);
 	        arr.add(33); */
 	        ArraySort arr = new ArraySort(size, start, finish);
-	        ArraySort arrB = new ArraySort(arr); // Делаем копию
+	        ArraySort arr1; // Ссылка на массив, будет храниться копия исходного сформированного массива
 	
 	        // arr.display();
 	        
-			Stopwatch stopwatch = new Stopwatch();
-	        stopwatch.Start();
-	        arr.shakerSort();
-	        stopwatch.Stop();
-	        Console.WriteLine("Время сортировки №1: " + (stopwatch.ElapsedMilliseconds).ToString() + " мс");
-	        // arr.display();
-	
-			Stopwatch stopwatchB = new Stopwatch();
-	        stopwatchB.Start();
-	        arrB.bubbleSort(); // sortDirectInclusionBisection();
-	        stopwatchB.Stop();
-			Console.WriteLine("Время сортировки №2: " + (stopwatchB.ElapsedMilliseconds).ToString() + " мс");
-			// arrB.display();
+			Stopwatch stopwatch; // Объект стопвотча, будем считать время сортировки
 			
+			arr1 = new ArraySort(arr); // Делаем копию сходного массива для текущей сортировки
+			stopwatch = new Stopwatch();
+	        stopwatch.Start();
+	        arr1.insertionSort(); // Сортировка вставками
+	        stopwatch.Stop();
+	        Console.WriteLine("Длительность сортировки прямыми вставками: " + (stopwatch.ElapsedMilliseconds).ToString() + " мс");
+	        // arr1.display();
+	
+			arr1 = new ArraySort(arr);
+			stopwatch = new Stopwatch();
+	        stopwatch.Start();
+	        arr1.insertionSortBisection(); // Сортировка вставками
+	        stopwatch.Stop();
+	        Console.WriteLine("Длительность сортировки прямыми вставками с бисекцией: " + (stopwatch.ElapsedMilliseconds).ToString() + " мс");
+	        // arr1.display();
+			
+	        arr1 = new ArraySort(arr);
+	        stopwatch = new Stopwatch();
+	        stopwatch.Start();
+	        arr1.quickSort(); // Быстрая сортировка рекурсией
+	        stopwatch.Stop();
+	        Console.WriteLine("Длительность быстрой сортировки с рекурсией: " + (stopwatch.ElapsedMilliseconds).ToString() + " мс");
+	        // arr1.display();
+			
+	        arr1 = new ArraySort(arr);
+	        stopwatch = new Stopwatch();
+	        stopwatch.Start();
+	        arr1.quickSortNonRecursive(); // Быстрая сортировка рекурсией
+	        stopwatch.Stop();
+	        Console.WriteLine("Длительность быстрой сортировки без рекурсии: " + (stopwatch.ElapsedMilliseconds).ToString() + " мс");
+	        // arr1.display();
+	        
+	        arr1 = new ArraySort(arr);
+	        stopwatch = new Stopwatch();
+	        stopwatch.Start();
+	        arr1.selectionSort(); // Сортировка прямым выбором
+	        stopwatch.Stop();
+	        Console.WriteLine("Длительность сортировки прямым выбором: " + (stopwatch.ElapsedMilliseconds).ToString() + " мс");
+	        // arr1.display();
+	        
+	        arr1 = new ArraySort(arr);
+	        stopwatch = new Stopwatch();
+	        stopwatch.Start();
+	        arr1.bubbleSort(); // Сортировка прямого обмена (Пузырьковая сортировка)
+	        stopwatch.Stop();
+	        Console.WriteLine("Длительность сортировки пузырьком: " + (stopwatch.ElapsedMilliseconds).ToString() + " мс");
+	        // arr1.display();
+	        
+	        arr1 = new ArraySort(arr);
+	        stopwatch = new Stopwatch();
+	        stopwatch.Start();
+	        arr1.shakerSort(); // Шейкерная сортировка (хождение зигзагом с сужением границ, модификация пузырьковой сортировки)
+	        stopwatch.Stop();
+	        Console.WriteLine("Длительность шейкерной сортировки: " + (stopwatch.ElapsedMilliseconds).ToString() + " мс");
+	        // arr1.display();
+	        
+	        arr1 = new ArraySort(arr);
+	        stopwatch = new Stopwatch();
+	        stopwatch.Start();
+	        arr1.shellSort(); // Сортировки Шелла (несколько последовательных сортировок с разной дальностью):
+	        stopwatch.Stop();
+	        Console.WriteLine("Длительность сортировки Шелла: " + (stopwatch.ElapsedMilliseconds).ToString() + " мс");
+	        // arr1.display();
+	        
 	        Console.Write("Press any key to continue . . . ");
 			Console.ReadKey(true);
 		}
