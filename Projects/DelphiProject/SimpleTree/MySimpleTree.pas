@@ -186,17 +186,25 @@ begin
   end;
 end;
 
+
 // 8) Процедура печати дерева
 procedure PrintLeftTree(v: tree_ptr);
-var lv, h: Integer;
+var lv, h, t: Integer;
 begin
   h:= v^.height;
   for lv:= 0 to h do
   begin
+    // Делаем отступ слева:
+    t:= 1;
+    while t < ( Power( 2, (h - lv) ) ) do
+    begin
+      write('.');
+      t:= t + 1;
+    end;
     PrintLevel(v, lv, h);
     Writeln;
     // PrintLine(v, lv, h);
-    Writeln;
+    // Writeln;
   end;
 end;
 
@@ -204,47 +212,27 @@ end;
 procedure PrintLevel(v: tree_ptr; level: Integer; h: Integer);
 var t: Integer;
 begin
-  if v <> nil then
+  if  v <> nil  then
   begin
     if v^.depth = level then
     begin
-      t:= 0;
-      while t < (Power(2, v^.height)) -2 do
-      begin
-        write(' ');
-        t:= t + 1;
-      end;
       Write(v^.key); // Напечатать значение ключа
 
-      t:= 0;
-      while t < (Power(2, v^.height)) -1 do
+      // Делаем необходимый отступ после каждого элемента:
+      t:= 1;
+      while t < ( Power( 2, (h+1-level) ) ) do
       begin
-        write(' ');
+        write('.');
         t:= t + 1;
       end;
     end;
+    PrintLevel(v^.left, level, h);
+    PrintLevel(v^.right, level, h);
 
-    PrintLevel(v^.left, level, h-1);
-    PrintLevel(v^.right, level, h-1);
 
-  end
-  else
-  begin
-      t:= 0;
-      while t < (Power(2, h)) -2 do
-      begin
-        write(' ');
-        t:= t + 1;
-      end;
-      Write(' '); // Напечатать значение ключа
 
-      t:= 0;
-      while t < (Power(2, h)) -1 do
-      begin
-        write(' ');
-        t:= t + 1;
-      end;
   end;
+
 end;
 
 
