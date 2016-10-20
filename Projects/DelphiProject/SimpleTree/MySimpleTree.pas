@@ -14,7 +14,7 @@ type
      height: Integer; // Высота узла (расстояние в дугах от узла до наиболее удаленного потомка)
      depth: Integer; // Глубина узла (расстояние в дугах от корня до узла)
      weight: Integer; // Смещение влево-вправо относительно корневого элемента (по горизонтали)
-     info: string;  // Информационное поле, пока не используется
+     info: string;  // Информационное поле, используется в процедуре вывода на печать структуры дерева
      //element: Real; // Вещественное значение, пока не используется
      left: tree_ptr; // Левый потомок (указатель)
      right: tree_ptr; // Правый потомок (указатель)
@@ -22,55 +22,39 @@ type
 
 type
   Mass = array of Integer;
+// Процедуры обхода дерева (с печатью в строчку):
+procedure FrontOrderLeft(v: tree_ptr);  // Процедура прямого левого обхода с выводом ключа на консоль
+procedure FrontOrderLeftPosition(v: tree_ptr);  // Процедура прямого левого обхода с выводом ключа и положения на консоль
+procedure FrontOrderRight(v: tree_ptr); // Процедура прямого правого обхода с выводом на консоль
+procedure BackOrderLeft(v: tree_ptr);   // Процедура обратного левого обхода с выводом на консоль
+procedure BackOrderRight(v: tree_ptr);  // Процедура обратного правого обхода с выводом на консоль
+procedure InnerOrderLeft(v: tree_ptr);  // Процедура левого внутреннего обхода с выводом на консоль
+procedure InnerOrderRight(v: tree_ptr); // Процедура правого внутреннего обхода с выводом на консоль
 
-procedure FrontOrderLeft(v: tree_ptr);  // 1) Процедура прямого левого обхода с выводом ключа на консоль
-procedure FrontOrderLeftPosition(v: tree_ptr);  // 1-1) Процедура прямого левого обхода с выводом ключа и положения на консоль
-procedure FrontOrderRight(v: tree_ptr); // 2) Процедура прямого правого обхода с выводом на консоль
-procedure BackOrderLeft(v: tree_ptr);   // 3) Процедура обратного левого обхода с выводом на консоль
-procedure BackOrderRight(v: tree_ptr);  // 4) Процедура обратного правого обхода с выводом на консоль
-procedure InnerOrderLeft(v: tree_ptr);  // 5) Процедура левого внутреннего обхода с выводом на консоль
-procedure InnerOrderRight(v: tree_ptr); // 6) Процедура правого внутреннего обхода с выводом на консоль
+// Процедуры пространственной печати и вспомогательные для них процедуры
+procedure PrintTree(t: tree_ptr; h: Integer); // Простая АЛЬТЕРНАТИВНАЯ процедура печати дерева с h отступами
+procedure CreateFullTree(p: tree_ptr; h: Integer); // Процедура создания полного (сбалансированного)  дерева
+procedure CopyFullTree(sourse: tree_ptr; receiver: tree_ptr); // Процедура копирования ключей из неполного в полное (сбалансированное) дерево
+procedure PrintLeftTree(v: tree_ptr); // ОСНОВНАЯ процедура полной пространственной печати дерева
+procedure PrintLevel(v: tree_ptr; level: Integer; h: Integer); // Вспомогательная процедура пространственной печати узлов заданного уровня
 
+// Процедуры и функции для вставки, поиска и удаления ключа и вспомогательные для них процедуры и функции
+function HeightNode(t: tree_ptr): Integer;    // Вспомогательная функция возврата высоты узла
+function FixHeight(v: tree_ptr): Integer; // Вспомогательная функция определения высоты вершины
+function InsertKey(p: tree_ptr; k: Integer): tree_ptr; // ОСНОВНАЯ Функция вставки ключа k в дерево с корнем p
+procedure BalancedDepthWeightHeight(v: tree_ptr; d: Integer; w: Integer); // Вспомогательная функция перерасчета высоты-ширины-глубины всех узлов дерева (при добавлении / удалении узла)
+function FindMinNode(p: tree_ptr): tree_ptr;  // Вспомогательная функция поиска узла с минимальным ключем в дереве p
+function FindMaxNode(p: tree_ptr): tree_ptr;  // Вспомогательная функция поиска узла с максимаьным ключем в дереве p
+function RemoveMinNode(p: tree_ptr): tree_ptr; // Cлужебная функция для удаления минимального элемента из заданного дерева:
+function RemoveMaxNode(p: tree_ptr): tree_ptr; // Cлужебная функция для удаления максимального элемента из заданного дерева:
+function RightRemoveKey(p: tree_ptr; k: Integer): tree_ptr; // ОСНОВНАЯ Функция ПРАВОГО удаления элемента по его ключу
+function LeftRemoveKey(p: tree_ptr; k: Integer): tree_ptr; // ОСНОВНАЯ Функция ЛЕВОГО удаления элемента по его ключу
 //
-procedure PrintTree(t: tree_ptr; h: Integer); // 9) Процедура печати дерева с h отступами
-
-
-procedure CreateFullTree(p: tree_ptr; h: Integer);
-procedure CopyFullTree(sourse: tree_ptr; receiver: tree_ptr);
-
-procedure PrintLeftTree(v: tree_ptr);
-
-procedure PrintLevel(v: tree_ptr; level: Integer; h: Integer);
-
-
-function HeightNode(t: tree_ptr): Integer;    // 10) Функция возврата высоты узла
-function FixHeight(v: tree_ptr): Integer; // 11) Функция определения высоты вершины
-
-
-// 16) Функция вставки ключа k в дерево с корнем p:
-function InsertKey(p: tree_ptr; k: Integer): tree_ptr;
-procedure BalancedDepthWeightHeight(v: tree_ptr; d: Integer; w: Integer);
-//
-// 17) Вспомогательная функция поиска узла с минимальным ключем в дереве p
-function FindMinNode(p: tree_ptr): tree_ptr;
-// 17) Вспомогательная функция поиска узла с максимаьным ключем в дереве p
-function FindMaxNode(p: tree_ptr): tree_ptr;
-//
-function RemoveMinNode(p: tree_ptr): tree_ptr; // 18) Cлужебная функция для удаления минимального элемента из заданного дерева:
-function RemoveMaxNode(p: tree_ptr): tree_ptr; // 18) Cлужебная функция для удаления максимального элемента из заданного дерева:
-//
-function RightRemoveKey(p: tree_ptr; k: Integer): tree_ptr; // Функция ПРАВОГО удаления элемента по его ключу
-function LeftRemoveKey(p: tree_ptr; k: Integer): tree_ptr; // Функция ЛЕВОГО удаления элемента по его ключу
-
-//
-
-function ParentCount(v: tree_ptr): Integer;
-procedure CopyLR(v: tree_ptr; var arr : Mass);
-function CopyLRtoMassiv(v: tree_ptr): Mass;
+function ParentCount(v: tree_ptr): Integer;  // Вспомогательная функция подсчета количества потомков узла
+procedure CopyLR(v: tree_ptr; var arr : Mass); // Вспомогательная процедура поиска и копирования в массив ключей
+function CopyLRtoMassiv(v: tree_ptr): Mass; // ОСНОВНАЯ функция поиска и копирования в массив ключей
 function CountLR(v: tree_ptr): Integer;
-
 //
-
 function FindMiddleAndRightRemove(v: tree_ptr): tree_ptr; // Функция поиска и ПРАВОГО удаления средней по значению вершины среди тех, у который количество потомков справа и слева отличаются на 1
 function FindMiddleAndLeftRemove(v: tree_ptr): tree_ptr; // Функция поиска и ЛЕВОГО удаления средней по значению вершины среди тех, у который количество потомков справа и слева отличаются на 1
 
@@ -203,6 +187,7 @@ begin
   end;
 end;
 
+// 8) Процедура создания полного дерева
 procedure CreateFullTree(p: tree_ptr; h: Integer);
 var q, r: tree_ptr;
 begin
@@ -235,6 +220,7 @@ begin
   end;
 end;
 
+// Процедура копирования ключей одного дерева в другое
 procedure CopyFullTree(sourse: tree_ptr; receiver: tree_ptr);  // Обходим прямым левым обходом
 begin
   if sourse <> nil then
@@ -247,7 +233,7 @@ begin
 end;
 
 
-// 8) Процедура печати дерева
+// ОСНОВНАЯ Процедура прсотранственной печати дерева
 procedure PrintLeftTree(v: tree_ptr);
 var lv, h, t: Integer;
     fullTree: tree_ptr;
