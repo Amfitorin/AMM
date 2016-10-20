@@ -14,7 +14,7 @@ type
      height: Integer; // Высота узла (расстояние в дугах от узла до наиболее удаленного потомка)
      depth: Integer; // Глубина узла (расстояние в дугах от корня до узла)
      weight: Integer; // Смещение влево-вправо относительно корневого элемента (по горизонтали)
-     //info: string;  // Информационное поле, пока не используется
+     info: string;  // Информационное поле, пока не используется
      //element: Real; // Вещественное значение, пока не используется
      left: tree_ptr; // Левый потомок (указатель)
      right: tree_ptr; // Правый потомок (указатель)
@@ -33,9 +33,14 @@ procedure InnerOrderRight(v: tree_ptr); // 6) Процедура правого внутреннего обхо
 
 //
 procedure PrintTree(t: tree_ptr; h: Integer); // 9) Процедура печати дерева с h отступами
+
+
+procedure CreateFullTree(p: tree_ptr; h: Integer);
+procedure CopyFullTree(sourse: tree_ptr; receiver: tree_ptr);
+
 procedure PrintLeftTree(v: tree_ptr);
+
 procedure PrintLevel(v: tree_ptr; level: Integer; h: Integer);
-procedure PrintLine(v: tree_ptr; level: Integer; h: Integer);
 
 
 function HeightNode(t: tree_ptr): Integer;    // 10) Функция возврата высоты узла
@@ -198,25 +203,76 @@ begin
   end;
 end;
 
+procedure CreateFullTree(p: tree_ptr; h: Integer);
+var q, r: tree_ptr;
+begin
+  if h > 0 then
+  begin
+    New(q);
+    q^.key:= 0;
+    q^.height:=0;
+    q^.depth:= 0;
+    q^.weight:= 0;
+    q^.left:= nil;
+    q^.right:= nil;
+    q^.info:= ' ';
+
+    p^.left:= q;
+
+    New(r);
+    r^.key:= 0;
+    r^.height:=0;
+    r^.depth:= 0;
+    r^.weight:= 0;
+    r^.left:= nil;
+    r^.right:= nil;
+    r^.info:= ' ';
+
+    p^.right:= r;
+
+    CreateFullTree(p^.left, h-1);
+    CreateFullTree(p^.right, h-1);
+  end;
+end;
+
+procedure CopyFullTree(sourse: tree_ptr; receiver: tree_ptr);  // Обходим прямым левым обходом
+begin
+  if sourse <> nil then
+  begin
+    receiver^.key:= sourse^.key;
+    receiver^.info:= sourse^.info;
+    CopyFullTree(sourse^.left, receiver^.left);
+    CopyFullTree(sourse^.right, receiver^.right);
+  end;
+end;
+
 
 // 8) Процедура печати дерева
 procedure PrintLeftTree(v: tree_ptr);
 var lv, h, t: Integer;
+    fullTree: tree_ptr;
 begin
   h:= v^.height;
+  // Создадим новое НАСЫЩЕННОЕ дерево:
+  New(fullTree);
+  CreateFullTree(fullTree, h);  //PrintTree(fullTree, h);
+  BalancedDepthWeightHeight(fullTree, 0, 0);
+  // И перенесем значения из нашего исходного дерева в это подставное дерево:
+  CopyFullTree(v, fullTree);
+
+
   for lv:= 0 to h do
   begin
     // Делаем отступ слева:
     t:= 1;
     while t < ( Power( 2, (h - lv) ) ) do
     begin
-      write('.');
+      write(' ');
       t:= t + 1;
     end;
-    PrintLevel(v, lv, h);
-    Writeln;
-    // PrintLine(v, lv, h);
-    // Writeln;
+    PrintLevel(fullTree, lv, h);
+    Writeln;  Writeln; Writeln;
+
   end;
 end;
 
@@ -228,70 +284,22 @@ begin
   begin
     if v^.depth = level then
     begin
-      Write(v^.key); // Напечатать значение ключа
+      //if Length(v^.info) = 1 then Write(' ', v^.info);
+      //if Length(v^.info) = 2 then Write(v^.info);
+      Write(v^.info); // Напечатать значение ключа
 
       // Делаем необходимый отступ после каждого элемента:
       t:= 1;
       while t < ( Power( 2, (h+1-level) ) ) do
       begin
-        write('.');
+        write(' ');
         t:= t + 1;
       end;
     end;
     PrintLevel(v^.left, level, h);
     PrintLevel(v^.right, level, h);
-
-
-
   end;
 
-end;
-
-
-procedure PrintLine(v: tree_ptr; level: Integer; h: Integer);
-var t: Integer;
-begin
-  if v <> nil then
-  begin
-    if v^.depth = level then
-    begin
-      t:= 0;
-      while t < (Power(2, v^.height)) -2 do
-      begin
-        write(' ');
-        t:= t + 1;
-      end;
-      Write('|'); // Напечатать значение ключа
-
-      t:= 0;
-      while t < (Power(2, v^.height)) -1 do
-      begin
-        write(' ');
-        t:= t + 1;
-      end;
-    end;
-
-    PrintLine(v^.left, level, h-1);
-    PrintLine(v^.right, level, h-1);
-
-  end
-  else
-  begin
-      t:= 0;
-      while t < (Power(2, h)) -2 do
-      begin
-        write('|');
-        t:= t + 1;
-      end;
-      Write(' '); // Напечатать значение ключа
-
-      t:= 0;
-      while t < (Power(2, h)) -1 do
-      begin
-        write(' ');
-        t:= t + 1;
-      end;
-  end;
 end;
 
 
@@ -333,6 +341,7 @@ begin
     p^.weight:= 0;
     p^.left:= nil;
     p^.right:= nil;
+    p^.info:= IntToStr(k);
     BalancedDepthWeightHeight(p, 0, 0);
     Result:= p;
   end
@@ -550,7 +559,7 @@ begin
   n:= CountLR(v);
   //Writeln(n);
   if n = 0 then
-    Writeln('Подходящих узлов не найдено. Завершение программы')
+    Writeln('   Подходящие узлы не найдены')
   else
   begin
     arr:= CopyLRtoMassiv(v); // Иначе все хорошо, переносим все подходящие элементы в массив
@@ -558,14 +567,14 @@ begin
     PrintArr(arr); // Печатаем все элементы массива
     if (n mod 2) = 0 then
     begin
-      Writeln('Подходящих элементов четное количество (', n, ')');
-      Writeln('Нет медианы среди найденных узлов. Завершение программы');
+      Writeln('   Подходящих элементов ', n, ', четное количество ');
+      Writeln('   Нет медианы среди найденных узлов. Удалять нечего');
     end
     else
     begin
       key:= arr[(n div 2)];
-      Writeln('Подходящих элементов нечетное количество (', n, ')');
-      Writeln('Средняя по значению вершина: ', key);
+      Writeln('   Подходящих элементов ', n, ', нечетное количество ');
+      Writeln('   Средняя по значению вершина: ', key, '. Ее и удаляем');
       // И удаляем правым удалением ненужную вершину:
       v:= RightRemoveKey(v, key); // удаление ключа k из дерева p
       BalancedDepthWeightHeight(v, 0, 0); // Пересчитываем все глубины и смещения
@@ -586,7 +595,7 @@ begin
   n:= CountLR(v);
   //Writeln(n);
   if n = 0 then
-    Writeln('Подходящих узлов не найдено. Завершение программы')
+    Writeln('   Подходящие узлы не найдены')
   else
   begin
     arr:= CopyLRtoMassiv(v); // Иначе все хорошо, переносим все подходящие элементы в массив
@@ -594,14 +603,14 @@ begin
     PrintArr(arr); // Печатаем все элементы массива
     if (n mod 2) = 0 then
     begin
-      Writeln('Подходящих элементов четное количество (', n, ')');
-      Writeln('Нет медианы среди найденных узлов. Завершение программы');
+      Writeln('   Подходящих элементов ', n, ', четное количество ');
+      Writeln('   Нет медианы среди найденных узлов. Удалять нечего');
     end
     else
     begin
       key:= arr[(n div 2)];
-      Writeln('Подходящих элементов нечетное количество (', n, ')');
-      Writeln('Средняя по значению вершина: ', key);
+      Writeln('   Подходящих элементов ', n, ', нечетное количество ');
+      Writeln('   Средняя по значению вершина: ', key, '. Ее и удаляем');
       // И удаляем правым удалением ненужную вершину:
       v:= LeftRemoveKey(v, key); // удаление ключа k из дерева p
       BalancedDepthWeightHeight(v, 0, 0); // Пересчитываем все глубины и смещения
@@ -614,7 +623,7 @@ end;
 procedure PrintArr(arr: Mass);
 var j: Integer;
 begin
-  write('Подходящие элементы: ');
+  write('   Подходящие элементы: ');
   for j:= 0 to Length(arr)-1 do
   begin
     write(arr[j], ' ');
