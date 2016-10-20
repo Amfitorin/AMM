@@ -40,21 +40,19 @@ begin
   close(myFile); // Закрываем файл, освобождаем ресурсы
 
   Write('-> '); Writeln('Исходное дерево (прямой левый обход):');
-  //Write('   '); FrontOrderLeftPosition(uk);  Writeln; // Выводим на консоль прямым левым обходом то, что получилось, наше дерево
+  Write('   '); FrontOrderLeft(uk);  Writeln; // Выводим на консоль прямым левым обходом то, что получилось, наше дерево
 
-  //
-  Writeln;
-
-  //uk:= LR(uk);  Writeln(FixHeight(uk));
+  // Ищем и удаляем
+  Writeln; uk:= FindMiddleAndRightRemove(uk); Writeln;// Writeln(FixHeight(uk));
 
   // FrontOrderLeft(uk);  Writeln;
   Write('-> '); Writeln('Новое дерево (прямой левый обход):');
-  //Write('   '); FrontOrderLeftPosition(uk);  Writeln; // Выводим на консоль прямым левым обходом то, что получилось, наше дерево
+  Write('   '); FrontOrderLeft(uk);  Writeln; // Выводим на консоль прямым левым обходом то, что получилось, наше дерево
 
 
 
 
-  PrintLeftTree(uk); Writeln;
+  //PrintLeftTree(uk); Writeln;
   //PrintTree(uk,0); // PrintTree(uk, 0); // Печать пространственного дерева
 
   Readln;
