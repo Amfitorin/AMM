@@ -26,7 +26,7 @@ begin
   Writeln('| ------------------------------------------------------- |');
   Writeln;
 
-  assign(myFile, 'in.txt'); // Связываем файл с переменной myFile
+  assign(myFile, 'in3.txt'); // Связываем файл с переменной myFile
 
   reset(myFile); // Открываем файл на чтение
 
@@ -39,21 +39,26 @@ begin
     end;
   close(myFile); // Закрываем файл, освобождаем ресурсы
 
-  Write('-> '); Writeln('Исходное дерево (прямой левый обход):');
-  Write('   '); FrontOrderLeft(uk);  Writeln; // Выводим на консоль прямым левым обходом то, что получилось, наше дерево
+  Write('   '); Write('Исходное дерево (прямой левый обход): ');
+  FrontOrderLeft(uk); // Выводим на консоль прямым левым обходом то, что получилось, наше дерево
+  Writeln;
 
-  // Ищем и удаляем
-  Writeln; uk:= FindMiddleAndRightRemove(uk); Writeln;// Writeln(FixHeight(uk));
+  Write('   '); WriteLn('Структура: ');
+  Writeln;
+  PrintLeftTree(uk); // Печать пространственного дерева
+
+  // Ищем и удаляем ПРАВЫМ удалением среднюю по значению
+  uk:= FindMiddleAndRightRemove(uk);
+  Writeln;
 
   // FrontOrderLeft(uk);  Writeln;
-  Write('-> '); Writeln('Новое дерево (прямой левый обход):');
-  Write('   '); FrontOrderLeft(uk);  Writeln; // Выводим на консоль прямым левым обходом то, что получилось, наше дерево
+  Write('   '); Write('Новое дерево (прямой левый обход): ');
+  FrontOrderLeft(uk); // Выводим на консоль прямым левым обходом то, что получилось, наше дерево
+  Writeln;
 
-
-
-
-  //PrintLeftTree(uk); Writeln;
-  //PrintTree(uk,0); // PrintTree(uk, 0); // Печать пространственного дерева
+  Write('   '); WriteLn('Структура: ');
+  Writeln;
+  PrintLeftTree(uk); // Печать пространственного дерева
 
   Readln;
 end.
