@@ -48,17 +48,29 @@ procedure BalancedDepthWeightHeight(v: tree_ptr; d: Integer; w: Integer);
 //
 // 17) Вспомогательная функция поиска узла с минимальным ключем в дереве p
 function FindMinNode(p: tree_ptr): tree_ptr;
-// 17) Вспомогательная функция поиска узла с минимальным ключем в дереве p
+// 17) Вспомогательная функция поиска узла с максимаьным ключем в дереве p
 function FindMaxNode(p: tree_ptr): tree_ptr;
 //
 function RemoveMinNode(p: tree_ptr): tree_ptr; // 18) Cлужебная функция для удаления минимального элемента из заданного дерева:
-function RemoveKey(p: tree_ptr; k: Integer): tree_ptr; // 19) Собственно, сама функция удаления элемента по его ключу // удаление ключа k из дерева p
+function RemoveMaxNode(p: tree_ptr): tree_ptr; // 18) Cлужебная функция для удаления максимального элемента из заданного дерева:
 //
+function RightRemoveKey(p: tree_ptr; k: Integer): tree_ptr; // Функция ПРАВОГО удаления элемента по его ключу
+function LeftRemoveKey(p: tree_ptr; k: Integer): tree_ptr; // Функция ЛЕВОГО удаления элемента по его ключу
+
+//
+
 function ParentCount(v: tree_ptr): Integer;
 procedure CopyLR(v: tree_ptr; var arr : Mass);
 function CopyLRtoMassiv(v: tree_ptr): Mass;
 function CountLR(v: tree_ptr): Integer;
-function LR(v: tree_ptr): tree_ptr;
+
+//
+
+function FindMiddleAndRightRemove(v: tree_ptr): tree_ptr; // Функция поиска и ПРАВОГО удаления средней по значению вершины среди тех, у который количество потомков справа и слева отличаются на 1
+function FindMiddleAndLeftRemove(v: tree_ptr): tree_ptr; // Функция поиска и ЛЕВОГО удаления средней по значению вершины среди тех, у который количество потомков справа и слева отличаются на 1
+
+//
+
 procedure PrintArr(arr: Mass);
 
 var i: Integer;
@@ -394,16 +406,16 @@ begin
   end;
 end;
 
-// 19) Собственно, сама функция удаления элемента по его ключу:
-function RemoveKey(p: tree_ptr; k: Integer): tree_ptr; // удаление ключа k из дерева p
+// 19) Функция ПРАВОГО удаления элемента по его ключу:
+function RightRemoveKey(p: tree_ptr; k: Integer): tree_ptr; // удаление ключа k из дерева p
 var q, r, min: tree_ptr;
 begin
   if p = nil then Result:= nil
   else
   begin
-    if k < p^.key then p^.left:= RemoveKey(p^.left, k)
+    if k < p^.key then p^.left:= RightRemoveKey(p^.left, k)
     else
-      if k > p^.key then p^.right:= RemoveKey(p^.right, k)
+      if k > p^.key then p^.right:= RightRemoveKey(p^.right, k)
       else  // Нашли ключ, т.е. k = p^.key
         begin
           // Writeln(p^.key); // 11 Для отладки
@@ -425,7 +437,40 @@ begin
   // И если не пустой указатель, то балансируем узел, или просто возвращаем nil
   if p <> nil then Result:= p //BalanceNode(p)
   else Result:= nil;
-end;  
+end;
+
+// 19) Функция ЛЕВОГО удаления элемента по его ключу:
+function LeftRemoveKey(p: tree_ptr; k: Integer): tree_ptr; // удаление ключа k из дерева p
+var q, r, max: tree_ptr;
+begin
+  if p = nil then Result:= nil
+  else
+  begin
+    if k < p^.key then p^.left:= LeftRemoveKey(p^.left, k)
+    else
+      if k > p^.key then p^.right:= LeftRemoveKey(p^.right, k)
+      else  // Нашли ключ, т.е. k = p^.key
+        begin
+          // Writeln(p^.key); // 11 Для отладки
+          q:= p^.left; // Запомнили левое поддерево   // 10
+          r:=p^.right; // Запомнили правое поддерево  // 13
+          if r = nil then p:= q   // Если правого поддерева нет, просто переносим на место строго узла новый
+          else
+          begin
+            max:= FindMaxNode(r); // иначе ищем минимальный элемент в правом поддереве и запоминаем его
+            // Writeln(min^.key); // 12 Для отладки
+            max^.right:= RemoveMaxNode(r); // Перенесли в правое поддерево 12 элемента элемент 13 и всю его цепочку
+            // Writeln((min^.right)^.key);  // Для отладки
+            max^.left:= q;
+            p:= max; // Вот этого не было // p:= min; // Вот этого не было
+            Result:= p; //BalanceNode(min);
+          end;  
+        end;  
+  end;
+  // И если не пустой указатель, то балансируем узел, или просто возвращаем nil
+  if p <> nil then Result:= p //BalanceNode(p)
+  else Result:= nil;
+end;
 
 
 // -----------------------------------------------------------------------------
@@ -496,8 +541,7 @@ end;
 // Процедура находжения и удаления (правым удалением) среднюю по значению
 // вершину из вершин дерева, у которых количество потомков в левом поддереве
 // отличается от количества потомков в правом поддереве на 1
-
-function LR(v: tree_ptr): tree_ptr;
+function FindMiddleAndRightRemove(v: tree_ptr): tree_ptr;
 var arr: Mass;
     n: Integer; // Количество элементов
     key: Integer; // Найденный ключ средней по значению вершины
@@ -523,15 +567,50 @@ begin
       Writeln('Подходящих элементов нечетное количество (', n, ')');
       Writeln('Средняя по значению вершина: ', key);
       // И удаляем правым удалением ненужную вершину:
-      v:= RemoveKey(v, key); // удаление ключа k из дерева p
+      v:= RightRemoveKey(v, key); // удаление ключа k из дерева p
       BalancedDepthWeightHeight(v, 0, 0); // Пересчитываем все глубины и смещения
-
-      
     end;
   end;
   Result:= v;
 end;
 
+// Функция находжения и удаления (левым удалением) средней по значению
+// вершины из вершин дерева, у которых количество потомков в левом поддереве
+// отличается от количества потомков в правом поддереве на 1
+function FindMiddleAndLeftRemove(v: tree_ptr): tree_ptr;
+var arr: Mass;
+    n: Integer; // Количество элементов
+    key: Integer; // Найденный ключ средней по значению вершины
+begin
+  // Определяем количество подходящих элементов:
+  n:= CountLR(v);
+  //Writeln(n);
+  if n = 0 then
+    Writeln('Подходящих узлов не найдено. Завершение программы')
+  else
+  begin
+    arr:= CopyLRtoMassiv(v); // Иначе все хорошо, переносим все подходящие элементы в массив
+    QuickSortNonRecursive(arr); // Сортируем массив
+    PrintArr(arr); // Печатаем все элементы массива
+    if (n mod 2) = 0 then
+    begin
+      Writeln('Подходящих элементов четное количество (', n, ')');
+      Writeln('Нет медианы среди найденных узлов. Завершение программы');
+    end
+    else
+    begin
+      key:= arr[(n div 2)];
+      Writeln('Подходящих элементов нечетное количество (', n, ')');
+      Writeln('Средняя по значению вершина: ', key);
+      // И удаляем правым удалением ненужную вершину:
+      v:= LeftRemoveKey(v, key); // удаление ключа k из дерева p
+      BalancedDepthWeightHeight(v, 0, 0); // Пересчитываем все глубины и смещения
+    end;
+  end;
+  Result:= v;
+end;
+
+// Процедура вывода на консоль элементов массива интов
 procedure PrintArr(arr: Mass);
 var j: Integer;
 begin
