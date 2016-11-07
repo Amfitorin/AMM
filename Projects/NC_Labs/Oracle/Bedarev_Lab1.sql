@@ -1,3 +1,4 @@
+-- Бедарев А.А. Практическая работа №1.
 -- 1)
 SELECT * FROM departments
 ORDER BY department_id;
