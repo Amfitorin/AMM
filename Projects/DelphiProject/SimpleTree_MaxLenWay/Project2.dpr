@@ -11,7 +11,7 @@ uses
 var myFile: Text; // Переменная типа Text для асоцииации с текстовым файлом
     tmp: Integer;
 
-    uk: tree_ptr;
+    uk, tmpNode: tree_ptr;
     sum, count, srednee: Integer;
 
 begin
@@ -48,7 +48,12 @@ begin
   // 2) -----------------------------------------------------------------------
 
   // 3) ------------------ Выполнение требований задания ----------------------
-  WriteLn('   Сумма конечных для корневого: ', SumKey_MaxLenWay(uk));
+  //WriteLn('   Сумма конечных для корневого: ', SumKey_MaxLenWay(uk));
+  tmpNode:= FindNodeBetween_MaxLenWay(uk);
+  WriteLn('   Узел, через который проходит искомый путь: ', tmpNode^.key);
+  WriteLn('   Сумма конечных элементов для данного узла: ', SumKey_MaxLenWay(tmpNode) );
+  write('   Путь максимальной длины: '); PrintMaxLenWay(tmpNode);
+  Writeln('   Длина пути: ', MaxLenWay(tmpNode) );
  {
   // Ищем и удаляем ПРАВЫМ удалением среднюю по значению
   uk:= FindMiddleAndRightRemove(uk);
