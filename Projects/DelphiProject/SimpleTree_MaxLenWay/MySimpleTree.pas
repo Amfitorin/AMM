@@ -64,6 +64,9 @@ function FindMiddleAndLeftRemove(v: tree_ptr): tree_ptr; // Функция поиска и ЛЕВ
 procedure PrintArr(arr: Mass); // Процедура печати в консоль элементов массива в строчку с пробелами между элементами
 //
 
+function SumKey(v: tree_ptr): Integer; // Вспомогательная Функция вычисления суммы конечных элементов пути максимальной длины
+function SumKey_MaxLenWay(v: tree_ptr): Integer; // Основная Функция вычисления суммы конечных элементов пути максимальной длины
+
 
 var i: Integer;
     massiv: array of Integer;
@@ -607,6 +610,42 @@ begin
     write(arr[j], ' ');
   end;
   Writeln;
+end;
+
+// 2016-11-07
+
+// 29) Вспомогательная Функция вычисления суммы конечных элементов пути максимальной длины
+function SumKey(v: tree_ptr): Integer;
+begin
+  if ((v^.left = NIL) and (v^.right = NIL)) then   // Если дошли до листа, то
+  Result:= v^.key // То возвращаем ключ этого листа
+  else  // Иначе есть еще пути вниз, как минимум один, а то и все два
+  begin
+    if ((v^.left <> NIL) and (v^.right = NIL)) then    // Если есть только левый путь, то
+    Result:= SumKey(v^.left);    // идем влево
+    if ((v^.left = NIL) and (v^.right <> NIL)) then    // Если есть только правый путь, то
+    Result:= SumKey(v^.right);    // идем вправо
+    if ((v^.left <> NIL) and (v^.right <> NIL)) then    // Если же есть оба пути, то
+    begin // Решаем, по какому пути пойдем, а пойдем мы по самому длинному
+      // Проверяем, какая ветвь длиннее, по той и идем: // Если высота левой больше или равна, то по ней и идем
+      if v^.left^.height >= v^.right^.height then Result:= SumKey(v^.left)
+      else SumKey(v^.left);
+    end;
+  end;
+end;  
+
+
+// 30) Основная Функция вычисления суммы конечных элементов пути максимальной длины
+function SumKey_MaxLenWay(v: tree_ptr): Integer;
+var sum: Integer;
+begin
+  sum:=0;
+  if v <> nil then
+  begin
+    if v^.left <> nil then sum:= sum + SumKey(v^.left) else sum:= sum + v^.key;
+    if v^.right <> nil then sum:= sum + SumKey(v^.right) else sum:= sum + v^.key;
+  end; 
+  Result:= sum;
 end;
 
 // Окончание модуля.
