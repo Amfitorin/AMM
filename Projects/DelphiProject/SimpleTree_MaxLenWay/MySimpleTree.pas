@@ -67,9 +67,24 @@ procedure PrintArr(arr: Mass); // Процедура печати в консоль элементов массива в
 function SumKey(v: tree_ptr): Integer; // Вспомогательная Функция вычисления суммы конечных элементов пути максимальной длины
 function SumKey_MaxLenWay(v: tree_ptr): Integer; // Основная Функция вычисления суммы конечных элементов пути максимальной длины
 
+//
+
+
+function MaxLenWay(v: tree_ptr): Integer; // Функция определения максимальной длины пути, проходящего через заданный узел
+function FindNodeBetween_MaxLenWay(v: tree_ptr): tree_ptr; // Основная функция поиска узла, через который проходит путь максимальной длины
+procedure FindNode_MaxLenWay(v: tree_ptr); // Вспомогательная процедура обхода дерева и поиска узла, через который проходит путь максимальной длины
+
+
+procedure PrintWayLeft(v: tree_ptr);  // Вспомогательная процедура (по одной ветви) ПЕЧАТИ узлов пути максимальной длины, проходящей через заданный узел
+procedure PrintWayRight(v: tree_ptr); // Вспомогательная процедура (по правой ветви) ПЕЧАТИ узлов пути максимальной длины, проходящей через заданный узел
+procedure PrintMaxLenWay(v: tree_ptr); // Основная процедура(по обеим ветвям) ПЕЧАТИ узлов пути максимальной длины, проходящей через заданный узел
 
 var i: Integer;
     massiv: array of Integer;
+
+    tmpN: tree_ptr;  // Узел для хранения узла, через который проходит путь максимально длины
+    tmpL: Integer; // Переменная для хранения длиня максимального пути
+    tmpS: Integer; // Переменная для хранения минимальной суммы конечных элементов
 
 
 implementation // ---- Раздел реализаций ---
@@ -255,7 +270,7 @@ begin
   begin
     // Формируем требуемый отступ слева (в соотвествии с текущим уровнем lv и высотой дерева h):
     t:= 1;
-    while t < ( Power( 2, (h - lv) ) ) do
+    while t < ( Power( 2, (h - lv) ) )+5 do          // +5 - это отступ слева
     begin
       write(' ');
       t:= t + 1;
@@ -647,6 +662,118 @@ begin
   end; 
   Result:= sum;
 end;
+
+// 31) Функция определения максимальной длины пути, проходящего через заданный узел
+function MaxLenWay(v: tree_ptr): Integer;
+var len: Integer;
+begin
+  len:= 0;
+  if v <> NIL then  // Если не ниловый узел, то
+  begin
+    if v^.left <> NIL then len:= len + 1 + v^.left^.height;  // увеличиваем на длину по левому плечу (+1 - т.к. еще путь до текущего)
+    if v^.right <> NIL then len:= len + 1 + v^.right^.height; // увеличиваем на длину по правому плечу
+  end;
+  Result:= len;
+end;
+
+// 32) Основная функция поиска узла, через который проходит путь максимальной длины
+function FindNodeBetween_MaxLenWay(v: tree_ptr): tree_ptr;
+begin
+  tmpN:= NIL;   // Запоминаем в глобальной переменной указатель на NIL
+  tmpL:= 0; // Считаем длину максимального пути равной 0
+  tmpS:= 10000; // Запоминаем в глобальной переменной сумму конечных ключей, пусть она будет очень большой
+  FindNode_MaxLenWay(v);  // И запускаем поиск узла с лучшими параметрами
+  Result:= tmpN;
+end;
+
+// 33) Вспомогательная процедура обхода дерева и поиска узла, через который проходит путь максимальной длины
+procedure FindNode_MaxLenWay(v: tree_ptr);
+var len: Integer;
+begin
+  if v <> nil then
+  begin
+    len:= MaxLenWay(v); // Определяем длину максимального пути через текущую вершину
+    if len > tmpL then  // Если она больше уже известной, то
+    begin
+      tmpN:= v;
+      tmpL:= len;
+      tmpS:= SumKey_MaxLenWay(v);
+    end;
+    if len = tmpL then // если же она равна уже известной, то нужно проверить, у которой сумма конечных меньше
+    begin
+      if SumKey_MaxLenWay(v) < tmpS then     // И если у новой сумма конечных меньше, она и становится временной
+      begin
+        tmpN:= v;
+        tmpL:= len;
+        tmpS:= SumKey_MaxLenWay(v);
+      end;
+    end;
+    FindNode_MaxLenWay(v^.left); // Идем вниз влево
+    FindNode_MaxLenWay(v^.right); // Идем вниз вправо
+  end;
+end;
+
+
+// 33) Вспомогательная процедура (по левой ветви) ПЕЧАТИ узлов пути максимальной длины, проходящей через заданный узел
+procedure PrintWayLeft(v: tree_ptr);
+begin
+  if ((v^.left = NIL) and (v^.right = NIL)) then   // Если дошли до листа, то
+  write(v^.key, ' ') // То печатаем ключ этого листа
+  else  // Иначе есть еще пути вниз, как минимум один, а то и все два
+  begin
+    if ((v^.left <> NIL) and (v^.right = NIL)) then    // Если есть только левый путь, то
+      PrintWayLeft(v^.left);    // идем влево
+
+    if ((v^.left = NIL) and (v^.right <> NIL)) then    // Если есть только правый путь, то
+      PrintWayLeft(v^.right);    // идем вправо
+
+    if ((v^.left <> NIL) and (v^.right <> NIL)) then    // Если же есть оба пути, то
+    begin // Решаем, по какому пути пойдем, а пойдем мы по самому длинному
+      // Проверяем, какая ветвь длиннее, по той и идем: // Если высота левой больше или равна, то по ней и идем
+      if v^.left^.height >= v^.right^.height then PrintWayLeft(v^.left)    // идем влево
+      else PrintWayLeft(v^.right);    // идем вправо
+    end;
+    write(v^.key, ' '); // и печатаем ключ этого листа
+  end;
+end;
+
+// 34) Вспомогательная процедура (по правой ветви) ПЕЧАТИ узлов пути максимальной длины, проходящей через заданный узел
+procedure PrintWayRight(v: tree_ptr);
+begin
+  if ((v^.left = NIL) and (v^.right = NIL)) then   // Если дошли до листа, то
+  write(v^.key, ' ') // То печатаем ключ этого листа
+  else  // Иначе есть еще пути вниз, как минимум один, а то и все два
+  begin
+    write(v^.key, ' '); // и печатаем ключ этого листа
+    if ((v^.left <> NIL) and (v^.right = NIL)) then    // Если есть только левый путь, то
+      PrintWayRight(v^.left);    // идем влево
+
+    if ((v^.left = NIL) and (v^.right <> NIL)) then    // Если есть только правый путь, то
+      PrintWayRight(v^.right);    // идем вправо
+
+    if ((v^.left <> NIL) and (v^.right <> NIL)) then    // Если же есть оба пути, то
+    begin // Решаем, по какому пути пойдем, а пойдем мы по самому длинному
+      // Проверяем, какая ветвь длиннее, по той и идем: // Если высота левой больше или равна, то по ней и идем
+      if v^.left^.height >= v^.right^.height then PrintWayRight(v^.left)    // идем влево
+      else PrintWayRight(v^.right);    // идем вправо
+    end;
+  end;
+end;
+
+
+// 35) Основная процедура(по обеим ветвям) ПЕЧАТИ узлов пути максимальной длины, проходящей через заданный узел
+procedure PrintMaxLenWay(v: tree_ptr);
+begin
+  if v <> nil then
+  begin
+    if v^.left <> nil then PrintWayLeft(v^.left);
+    write (v^.key, ' ');
+    if v^.right <> nil then PrintWayRight(v^.right);
+  end; 
+  Writeln;
+end;
+
+
 
 // Окончание модуля.
 
