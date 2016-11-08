@@ -111,7 +111,7 @@ WHERE o.ORDER_DATE BETWEEN DATE'1998-01-01' AND DATE'1998-12-31'
 		AND o.ORDER_STATUS > 0 /* где количество заказов больше нуля */
 /* Не используем группировку, так как работаем только с уникальными значениями столбца через DISTINCT : */
 /* GROUP BY to_char(o.ORDER_DATE, 'Month', 'NLS_DATE_LANGUAGE = RUSSIAN') /* <-- Почему не работает псевдоним MONTH ? */
-ORDER BY MONTH
+/* ORDER BY TO_CHAR(o.ORDER_DATE, 'fmMM') */ /* <-- Почему не работает сортировка? И как отсортировать? */
 ;
 
 -- 11) По реализации хорошая статья http://www.geocities.ws/luzanovp/calendar.html
