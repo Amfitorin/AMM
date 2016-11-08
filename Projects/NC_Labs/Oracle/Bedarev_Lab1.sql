@@ -114,6 +114,13 @@ WHERE o.ORDER_DATE BETWEEN DATE'1998-01-01' AND DATE'1998-12-31'
 /* ORDER BY TO_CHAR(o.ORDER_DATE, 'fmMM') */ /* <-- Почему не работает сортировка? И как отсортировать? */
 ;
 
+/*
+select distinct to_char(t1.order_date, 'MONTH','NLS_DATE_LANGUAGE = RUSSIAN ') MONTH
+from orders t1
+where t1.order_date like '%.98%'
+order by 1;
+*/
+
 -- 11) По реализации хорошая статья http://www.geocities.ws/luzanovp/calendar.html
 SELECT  TO_CHAR(TRUNC(SYSDATE, 'MM') + ROWNUM - 1) AS DT,
 		CASE
