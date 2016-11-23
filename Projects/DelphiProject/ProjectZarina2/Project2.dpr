@@ -3,7 +3,7 @@ program Project2;
 {$APPTYPE CONSOLE}
 
 uses
-  EsConsole in 'EsConsole.pas',
+  SysUtils,
   MySimpleTree in 'MySimpleTree.pas';
 
 // Модуль реализации простейшего дерева и функций работы с ним
