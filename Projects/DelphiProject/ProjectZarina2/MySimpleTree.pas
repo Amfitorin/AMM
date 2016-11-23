@@ -770,7 +770,7 @@ procedure FindNode_MinLenWay(v: tree_ptr);
 var len: Integer;
 begin
   len:= MinLenWay(v);
-  if (v <> nil) and (len > 0) then
+  if (v <> nil) and (len > 1)then
   begin
     //len:= MinLenWay(v); // Определяем длину МИНИМАЛЬНОГО пути через текущую вершину
 
