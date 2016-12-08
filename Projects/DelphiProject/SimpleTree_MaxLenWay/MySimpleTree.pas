@@ -79,6 +79,17 @@ procedure PrintWayLeft(v: tree_ptr);  // Вспомогательная процедура (по одной вет
 procedure PrintWayRight(v: tree_ptr); // Вспомогательная процедура (по правой ветви) ПЕЧАТИ узлов пути максимальной длины, проходящей через заданный узел
 procedure PrintMaxLenWay(v: tree_ptr); // Основная процедура(по обеим ветвям) ПЕЧАТИ узлов пути максимальной длины, проходящей через заданный узел
 
+
+// 36) ОСНОВНАЯ Процедура, делающая заданную вершину корневой для дерева и перестраивающая дерево
+procedure RebuildTree(rootOld: tree_ptr; rootNew: tree_ptr); 
+
+// 37) ВСПОМОГАТЕЛЬНАЯ процедура РАЗДЕЛЕНИЯ дерева на две части:
+procedure TreeToPartition(rootOld: tree_ptr; rootNew: tree_ptr);
+
+// 38) ВСПОМОГАТЕЛЬНАЯ Процедура, делающая заданную вершину корневой для дерева и перестраивающая дерево
+procedure Rebuild(v: tree_ptr; rootNew: tree_ptr);
+
+
 var i: Integer;
     massiv: array of Integer;
 
@@ -771,6 +782,59 @@ begin
     if v^.right <> nil then PrintWayRight(v^.right);
   end; 
   Writeln;
+end;
+
+// 36) ОСНОВНАЯ Процедура, делающая заданную вершину корневой для дерева и перестраивающая дерево
+procedure RebuildTree(rootOld: tree_ptr; rootNew: tree_ptr); // Передаем указатель на старую вершину и указатель на узел, который хотим сделать вершиной
+begin
+  // Сначала нужно разорвать на два дерева:
+  TreeToPartition(rootOld, rootNew);
+  BalancedDepthWeightHeight(rootOld, 0, 0); // Пересчитываем все глубины и смещения для оставшегося куска строго дерева
+  BalancedDepthWeightHeight(rootNew, 0, 0); // Пересчитываем все глубины и смещения для нового дерева
+  // А затем переписать из оставшегося куска старого дерева в новое дерево все оставшиеся узлы
+  Rebuild(rootOld, rootNew);
+end;
+
+// 37) ВСПОМОГАТЕЛЬНАЯ процедура РАЗДЕЛЕНИЯ дерева на две части:
+procedure TreeToPartition(rootOld: tree_ptr; rootNew: tree_ptr);
+begin
+  if rootOld <> nil then
+  begin
+    // rootOld не может быть листом, иначе нам нечего разделять
+    if (rootOld^.left <> nil) then // Если есть левый потомок, то     // and (rootOld^.right = nil) then   // Если является, то
+    begin
+      // Проверяем на совпадение
+      if rootOld^.left^.key = rootNew^.key then rootOld^.left:= nil    // Если ключи совпали, можем у текущей вершины rootOld оборвать связь:
+      else  // иначе продолжаем движение
+        begin
+          TreeToPartition(rootOld^.left, rootNew);
+        end;
+    end;
+    if (rootOld^.right <> nil) then // Если есть правый потомок, то
+    begin
+      // Проверяем на совпадение
+      if rootOld^.right^.key = rootNew^.key then rootOld^.right:= nil    // Если ключи совпали, можем у текущей вершины rootOld оборвать связь:
+      else  // иначе продолжаем движение
+        begin
+          TreeToPartition(rootOld^.right, rootNew);
+        end;
+    end;
+  end;
+end;
+
+// 38) ВСПОМОГАТЕЛЬНАЯ Процедура, делающая заданную вершину корневой для дерева и перестраивающая дерево
+procedure Rebuild(v: tree_ptr; rootNew: tree_ptr);
+begin
+  if v <> nil then
+  begin
+    if v^.key <> rootNew^.key then    // Если ключи не совпали, можем текущую вершину добавить в новое дерево:
+    begin
+      rootNew:= InsertKey(rootNew, v^.key);
+      // и топать вниз по уровням дальше:
+      Rebuild(v^.left, rootNew);
+      Rebuild(v^.right, rootNew);
+    end;
+  end;
 end;
 
 
