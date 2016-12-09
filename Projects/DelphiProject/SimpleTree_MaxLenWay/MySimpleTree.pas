@@ -89,6 +89,8 @@ procedure TreeToPartition(rootOld: tree_ptr; rootNew: tree_ptr);
 // 38) ВСПОМОГАТЕЛЬНАЯ Процедура, делающая заданную вершину корневой для дерева и перестраивающая дерево
 procedure Rebuild(v: tree_ptr; rootNew: tree_ptr);
 
+// 50) // Функция определения являются ли концы пути узлами одного уровня
+function OneLevel(v: tree_ptr): Integer;
 
 var i: Integer;
     massiv: array of Integer;
@@ -687,6 +689,21 @@ begin
   Result:= len;
 end;
 
+// 50) // Функция определения являются ли концы пути узлами одного уровня
+function OneLevel(v: tree_ptr): Integer;
+var len1, len2: Integer;
+begin
+  len1:= 0;
+  len2:= 0;
+  if v <> NIL then  // Если не ниловый узел, то
+  begin
+    if v^.left <> NIL then len1:= len1 + 1 + v^.left^.height;  // увеличиваем на длину по левому плечу (+1 - т.к. еще путь до текущего)
+    if v^.right <> NIL then len2:= len2 + 1 + v^.right^.height; // увеличиваем на длину по правому плечу
+  end;
+  if len1 <> len2 then Result:= MaxLenWay(v)
+  else Result:=   -100;
+end;
+
 // 32) Основная функция поиска узла, через который проходит путь максимальной длины
 function FindNodeBetween_MaxLenWay(v: tree_ptr): tree_ptr;
 begin
@@ -703,8 +720,10 @@ var len: Integer;
 begin
   if v <> nil then
   begin
-    len:= MaxLenWay(v); // Определяем длину максимального пути через текущую вершину
-    if len > tmpL then  // Если она больше уже известной, то
+    len:= OneLevel(v); //  Определяем длину максимального пути через текущую вершину
+
+    //Writeln(len);
+    if len > tmpL  then  // Если она больше уже известной, то
     begin
       tmpN:= v;
       tmpL:= len;
