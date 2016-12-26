@@ -45,7 +45,7 @@ begin
        // tmp:= ii[k];
        // ii[k]:= 9 - jj[k];
        // jj[k]:= 9 - tmp;
-       ii[k]:= 8 - ii[k];
+       ii[k]:= 9 - ii[k];
     end;
     // И печатаем перевернутый массив
     write('{');
