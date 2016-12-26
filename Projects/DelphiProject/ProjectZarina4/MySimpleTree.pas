@@ -1008,18 +1008,7 @@ begin
   begin
     if massivSize[i] < min then  min:= massivSize[i];
   end;
-  Writeln('Минимальная длина пути: ', min);
-
-    // Находим в массиве все пути с такой длиной:
-  Write('Вершины для удаления: ');
-  for i:= 0 to massivPosition-1 do
-  begin
-    if massivSize[i] = min then
-    begin
-      write(massivList[i], ' ');
-    end;
-  end;
-  Writeln;
+  Writeln('Минимальная длина пути (ребра): ', min);
 
   if (min mod 2) <> 0 then
   Writeln('Путь с четным количеством вершин, нет медианы, нечего удалять')
@@ -1031,23 +1020,11 @@ begin
       if massivSize[i] = min then
       begin
         // Находим середину пути и удаляем ее
-        Writeln('-', v^.key, ' ', min);
-        DeleteMiddleFromWay(v, v, min);
+        //Writeln('-', v^.key, ' ', min);
+        DeleteMiddleFromWay(v, v, min div 2);
       end;
     end;
-
-
-    for i:= 0 to massivPosition-1 do
-    begin
-      //
-      Write('ls ', massivList[i], ': sz ', massivSize[i], '; ');
-
-    end;
-  end;
-
-
-
-
+  end; 
 end;
 
 // Вспомогательная процедура:
@@ -1081,7 +1058,7 @@ procedure DeleteMiddleFromWay(v: tree_ptr; root: tree_ptr; size: Integer);
 begin
   if v <> nil then
   begin
-    Writeln(v^.key, ' h', v^.height, ' d', v^.depth, ' s', size);
+    //Writeln(v^.key, ' h', v^.height, ' d', v^.depth, ' s', size);
     if (v^.height = v^.depth) and (v^.height = size) then  // Если высота и глубина совпадают, то э
     begin
       root:= LeftRemoveKey(root, v^.key);
